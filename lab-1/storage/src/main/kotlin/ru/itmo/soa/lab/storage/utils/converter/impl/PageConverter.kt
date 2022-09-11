@@ -1,0 +1,15 @@
+package ru.itmo.soa.lab.storage.utils.converter.impl
+
+import org.springframework.data.domain.Page
+import org.springframework.stereotype.Component
+import ru.itmo.soa.lab.storage.utils.PageDto
+
+@Component
+class PageConverter {
+    fun <T> toDto(entity: Page<T>) = PageDto<T>(
+        entity.number + 1,
+        entity.size,
+        entity.totalPages,
+        entity.content
+    )
+}
