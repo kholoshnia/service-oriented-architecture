@@ -1,7 +1,10 @@
 package ru.itmo.soa.lab.storage.model.organization.dto
 
+import ru.itmo.soa.lab.storage.model.organization.entity.OrganizationId
 import javax.validation.constraints.Min
+import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
+import javax.validation.constraints.Size
 
 class OrganizationDto(
     /**
@@ -10,17 +13,37 @@ class OrganizationDto(
      * Значение этого поля должно быть уникальным,
      * Значение этого поля должно генерироваться автоматически
      */
-    @NotNull
-    @Min(1)
-    val id: Int,
+    @field:NotNull
+    @field:Min(1)
+    val id: OrganizationId,
 
-    name: String,
-    fullName: String?,
-    annualTurnover: Int?,
-    employeesCount: Long?,
-) : NewOrganizationDto(
-    name,
-    fullName,
-    annualTurnover,
-    employeesCount
+    /**
+     * Поле не может быть null,
+     * Строка не может быть пустой
+     */
+    @field:NotBlank
+    @field:NotNull
+    val name: String,
+
+    /**
+     * Длина строки не должна быть больше 1317,
+     * Значение этого поля должно быть уникальным,
+     * Поле может быть null
+     */
+    @field:Size(max = 1317)
+    val fullName: String?,
+
+    /**
+     * Поле может быть null,
+     * Значение поля должно быть больше 0
+     */
+    @field:Min(1)
+    val annualTurnover: Int?,
+
+    /**
+     * Поле может быть null,
+     * Значение поля должно быть больше 0
+     */
+    @field:Min(1)
+    val employeesCount: Long?,
 )

@@ -1,6 +1,6 @@
 package ru.itmo.soa.lab.storage.model.product.dto
 
-class ManufactureCostGroupDto(
+data class ManufactureCostGroupDto(
     val manufactureCost: Float,
     val count: Long
 )

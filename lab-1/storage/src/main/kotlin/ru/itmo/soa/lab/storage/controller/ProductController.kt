@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springdoc.api.annotations.ParameterObject
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 import ru.itmo.soa.lab.storage.model.product.dto.NewProductDto
 import ru.itmo.soa.lab.storage.model.product.entity.ProductId
 import ru.itmo.soa.lab.storage.services.product.ProductService
-import ru.itmo.soa.lab.storage.utils.LoggerDelegate
+import ru.itmo.soa.lab.storage.utils.ProductFilters
 import javax.validation.Valid
 import javax.validation.constraints.Min
 import javax.validation.constraints.Size
@@ -30,10 +29,6 @@ import javax.validation.constraints.Size
 class ProductController(
     private val productService: ProductService
 ) {
-    companion object {
-        val log by LoggerDelegate()
-    }
-
     @Operation(summary = "Add product")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
@@ -58,22 +53,16 @@ class ProductController(
     fun deleteProduct(@PathVariable @Min(1) productId: ProductId) =
         productService.deleteProduct(productId)
 
-    // TODO implement
     @Operation(summary = "Get products page with filters")
     @GetMapping
     fun getProductsPage(
-        @RequestParam(required = false) filterBy: Map<String, String>,
         @ParameterObject pageable: Pageable,
-    ): ResponseEntity<Void> {
-        log.info("pageable $pageable")
-        log.info("filterBy $filterBy")
-        return ResponseEntity.ok().build()
-    }
+        @ParameterObject productFilters: ProductFilters
+    ) = productService.getProductsPage(productFilters, pageable)
 
     @Operation(summary = "Get product with max price")
     @GetMapping("/max-price")
-    fun getMaxPriceProduct() =
-        productService.getMaxPriceProduct()
+    fun getMaxPriceProduct() = productService.getMaxPriceProduct()
 
     @Operation(summary = "Group products by manufacture cost")
     @GetMapping("/manufacture-cost-groups")

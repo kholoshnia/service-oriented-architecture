@@ -17,17 +17,17 @@ class Coordinates(
      * Максимальное значение поля: 492,
      * Поле не может быть null
      */
-    @Max(492)
-    @NotNull
-    @Column(nullable = false)
+    @field:Max(492)
+    @field:NotNull
+    @field:Column(nullable = false)
     var x: Int,
 
     /**
      * Значение поля должно быть больше -138,
      * Поле не может быть null
      */
-    @Min(-139)
-    @NotNull
-    @Column(nullable = false)
+    @field:Min(-139)
+    @field:NotNull
+    @field:Column(nullable = false)
     var y: Int,
 )

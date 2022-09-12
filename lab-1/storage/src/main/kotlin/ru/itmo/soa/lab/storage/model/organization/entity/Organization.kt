@@ -25,9 +25,9 @@ class Organization(
      * Поле не может быть null,
      * Строка не может быть пустой
      */
-    @NotBlank
-    @NotNull
-    @Column(nullable = false)
+    @field:NotBlank
+    @field:NotNull
+    @field:Column(nullable = false)
     var name: String,
 
     /**
@@ -35,22 +35,22 @@ class Organization(
      * Значение этого поля должно быть уникальным,
      * Поле может быть null
      */
-    @Size(max = 1317)
-    @Column(unique = true)
+    @field:Size(max = 1317)
+    @field:Column(unique = true)
     var fullName: String?,
 
     /**
      * Поле может быть null,
      * Значение поля должно быть больше 0
      */
-    @Min(1)
+    @field:Min(1)
     var annualTurnover: Int?,
 
     /**
      * Поле может быть null,
      * Значение поля должно быть больше 0
      */
-    @Min(1)
+    @field:Min(1)
     var employeesCount: Long?,
 ) {
     /**
@@ -59,7 +59,6 @@ class Organization(
      * Значение этого поля должно быть уникальным,
      * Значение этого поля должно генерироваться автоматически
      */
-    @NotNull
     @Min(1)
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

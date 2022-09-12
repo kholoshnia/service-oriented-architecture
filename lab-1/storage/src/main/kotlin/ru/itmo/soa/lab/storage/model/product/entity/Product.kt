@@ -31,24 +31,24 @@ class Product(
      * Поле не может быть null,
      * Строка не может быть пустой
      */
-    @NotBlank
-    @Column(nullable = false)
+    @field:NotBlank
+    @field:Column(nullable = false)
     var name: String,
 
     /**
      * Поле не может быть null
      */
-    @NotNull
-    @Embedded
+    @field:NotNull
+    @field:Embedded
     var coordinates: Coordinates,
 
     /**
      * Поле не может быть null,
      * Значение поля должно быть больше 0
      */
-    @Min(1)
-    @NotNull
-    @Column(nullable = false)
+    @field:Min(1)
+    @field:NotNull
+    @field:Column(nullable = false)
     var price: Int,
 
     /**
@@ -57,8 +57,8 @@ class Product(
      * Длина строки должна быть не меньше 25,
      * Поле может быть null
      */
-    @Size(min = 25, max = 48)
-    @Column(unique = true)
+    @field:Size(min = 25, max = 48)
+    @field:Column(unique = true)
     var partNumber: String?,
 
     var manufactureCost: Float,
@@ -66,13 +66,13 @@ class Product(
     /**
      * Поле может быть null
      */
-    @Enumerated(EnumType.STRING)
+    @field:Enumerated(EnumType.STRING)
     var unitOfMeasure: UnitOfMeasure?,
 
     /**
      * Поле может быть null
      */
-    @ManyToOne
+    @field:ManyToOne
     var manufacturer: Organization?,
 ) {
     /**
@@ -81,7 +81,6 @@ class Product(
      * Значение этого поля должно генерироваться автоматически
      */
     @Min(1)
-    @NotNull
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: ProductId? = null
@@ -90,7 +89,6 @@ class Product(
      * Поле не может быть null,
      * Значение этого поля должно генерироваться автоматически
      */
-    @NotNull
     @CreationTimestamp
     @Column(nullable = false)
     var creationDate: LocalDate? = null

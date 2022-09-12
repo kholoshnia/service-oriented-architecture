@@ -33,4 +33,4 @@ springdoc:
   swagger-ui:
     path: /swagger-ui
     operations-sorter: method
-    supported-submit-methods: [ ]
+    # supported-submit-methods: []
