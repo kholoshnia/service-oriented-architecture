@@ -22,8 +22,8 @@ import ru.itmo.soa.lab.storage.model.product.dto.NewProductDto
 import ru.itmo.soa.lab.storage.model.product.dto.ProductDto
 import ru.itmo.soa.lab.storage.model.product.entity.ProductId
 import ru.itmo.soa.lab.storage.services.product.ProductService
-import ru.itmo.soa.lab.storage.utils.ManufactureCostGroupDtoPage
-import ru.itmo.soa.lab.storage.utils.ProductDtoPage
+import ru.itmo.soa.lab.storage.utils.PageDtoManufactureCostGroupDto
+import ru.itmo.soa.lab.storage.utils.PageDtoProductDto
 import ru.itmo.soa.lab.storage.utils.ProductFilters
 import javax.validation.Valid
 import javax.validation.constraints.Min
@@ -36,7 +36,7 @@ class ProductController(
     private val productService: ProductService
 ) {
     @Operation(summary = "Add product", responses = [
-        ApiResponse(responseCode = "200", description = "Product added successfully",
+        ApiResponse(responseCode = "201", description = "Product added successfully",
             content = [(Content(mediaType = "application/xml", schema = Schema(implementation = ProductDto::class)))]),
         ApiResponse(responseCode = "400", description = "Invalid product provided",
             content = [(Content(mediaType = "text/plain", schema = Schema(implementation = String::class)))])])
@@ -70,8 +70,7 @@ class ProductController(
     ) = productService.updateProduct(productId, newProductDto)
 
     @Operation(summary = "Delete product", responses = [
-        ApiResponse(responseCode = "200", description = "Product deleted successfully",
-            content = [(Content(mediaType = "application/xml", schema = Schema(implementation = ProductDto::class)))]),
+        ApiResponse(responseCode = "204", description = "Product deleted successfully"),
         ApiResponse(responseCode = "400", description = "Invalid id provided",
             content = [(Content(mediaType = "text/plain", schema = Schema(implementation = String::class)))]),
         ApiResponse(responseCode = "404", description = "Product with specified ID not found",
@@ -83,7 +82,7 @@ class ProductController(
 
     @Operation(summary = "Get products page with filters", responses = [
         ApiResponse(responseCode = "200", description = "Products filtered successfully",
-            content = [(Content(mediaType = "application/xml", schema = Schema(implementation = ProductDtoPage::class)))]),
+            content = [(Content(mediaType = "application/xml", schema = Schema(implementation = PageDtoProductDto::class)))]),
         ApiResponse(responseCode = "400", description = "Invalid pagination or filters provided",
             content = [(Content(mediaType = "text/plain", schema = Schema(implementation = String::class)))])])
     @GetMapping
@@ -102,7 +101,7 @@ class ProductController(
 
     @Operation(summary = "Group products by manufacture cost", responses = [
         ApiResponse(responseCode = "200", description = "Products grouped successfully",
-            content = [(Content(mediaType = "application/xml", schema = Schema(implementation = ManufactureCostGroupDtoPage::class)))]),
+            content = [(Content(mediaType = "application/xml", schema = Schema(implementation = PageDtoManufactureCostGroupDto::class)))]),
         ApiResponse(responseCode = "400", description = "Invalid pagination provided",
             content = [(Content(mediaType = "text/plain", schema = Schema(implementation = String::class)))])])
     @GetMapping("/manufacture-cost-groups")
@@ -111,7 +110,7 @@ class ProductController(
 
     @Operation(summary = "Get products which has greater part number than specified", responses = [
         ApiResponse(responseCode = "200", description = "Products found successfully",
-            content = [(Content(mediaType = "application/xml", schema = Schema(implementation = ProductDtoPage::class)))]),
+            content = [(Content(mediaType = "application/xml", schema = Schema(implementation = PageDtoProductDto::class)))]),
         ApiResponse(responseCode = "400", description = "Invalid pagination or part number provided",
             content = [(Content(mediaType = "text/plain", schema = Schema(implementation = String::class)))])])
     @GetMapping("/greater-part-number")
