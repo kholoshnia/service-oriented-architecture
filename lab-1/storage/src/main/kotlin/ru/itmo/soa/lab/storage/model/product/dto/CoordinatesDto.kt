@@ -4,20 +4,20 @@ import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
 
-class CoordinatesDto(
+data class CoordinatesDto(
     /**
      * Максимальное значение поля: 492,
      * Поле не может быть null
      */
-    @Max(492)
-    @NotNull
+    @field:Max(492)
+    @field:NotNull
     var x: Int,
 
     /**
      * Значение поля должно быть больше -138,
      * Поле не может быть null
      */
-    @Min(-139)
-    @NotNull
+    @field:Min(-139)
+    @field:NotNull
     var y: Int,
 )

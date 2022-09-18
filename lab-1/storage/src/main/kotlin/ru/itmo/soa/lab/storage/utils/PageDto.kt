@@ -1,8 +1,8 @@
 package ru.itmo.soa.lab.storage.utils
 
-class PageDto<T>(
+open class PageDto<T>(
     val page: Int,
-    val pageSize: Int,
-    val totalPages: Int,
-    val data: List<T>,
+    val size: Int,
+    val total: Int,
+    val data: List<T>
 )

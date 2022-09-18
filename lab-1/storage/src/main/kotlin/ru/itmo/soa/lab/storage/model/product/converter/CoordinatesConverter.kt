@@ -1,9 +1,9 @@
-package ru.itmo.soa.lab.storage.utils.converter.impl
+package ru.itmo.soa.lab.storage.model.product.converter
 
 import org.springframework.stereotype.Component
 import ru.itmo.soa.lab.storage.model.product.dto.CoordinatesDto
 import ru.itmo.soa.lab.storage.model.product.entity.Coordinates
-import ru.itmo.soa.lab.storage.utils.converter.DtoConverter
+import ru.itmo.soa.lab.storage.utils.DtoConverter
 
 @Component
 class CoordinatesConverter : DtoConverter<Coordinates, CoordinatesDto> {

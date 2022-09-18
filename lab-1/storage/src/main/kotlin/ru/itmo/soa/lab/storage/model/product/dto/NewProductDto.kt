@@ -1,32 +1,32 @@
 package ru.itmo.soa.lab.storage.model.product.dto
 
-import ru.itmo.soa.lab.storage.model.organization.entity.Organization
+import ru.itmo.soa.lab.storage.model.organization.dto.NewOrganizationDto
 import ru.itmo.soa.lab.storage.model.product.entity.UnitOfMeasure
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
-open class NewProductDto(
+data class NewProductDto(
     /**
      * Поле не может быть null,
      * Строка не может быть пустой
      */
-    @NotBlank
+    @field:NotBlank
     val name: String,
 
     /**
      * Поле не может быть null
      */
-    @NotNull
+    @field:NotNull
     val coordinates: CoordinatesDto,
 
     /**
      * Поле не может быть null,
      * Значение поля должно быть больше 0
      */
-    @Min(1)
-    @NotNull
+    @field:Min(1)
+    @field:NotNull
     val price: Int,
 
     /**
@@ -35,7 +35,7 @@ open class NewProductDto(
      * Длина строки должна быть не меньше 25,
      * Поле может быть null
      */
-    @Size(min = 25, max = 48)
+    @field:Size(min = 25, max = 48)
     val partNumber: String?,
 
     val manufactureCost: Float,
@@ -48,5 +48,5 @@ open class NewProductDto(
     /**
      * Поле может быть null
      */
-    val manufacturer: Organization?,
+    val manufacturer: NewOrganizationDto?,
 )

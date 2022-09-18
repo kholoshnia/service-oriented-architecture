@@ -1,4 +1,4 @@
-package ru.itmo.soa.lab.storage.utils.converter
+package ru.itmo.soa.lab.storage.utils
 
 interface DtoConverter<Entity, Dto> {
     fun toEntity(dto: Dto): Entity {

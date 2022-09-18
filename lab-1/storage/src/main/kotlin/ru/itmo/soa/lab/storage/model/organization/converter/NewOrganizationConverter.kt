@@ -1,9 +1,9 @@
-package ru.itmo.soa.lab.storage.utils.converter.impl
+package ru.itmo.soa.lab.storage.model.organization.converter
 
 import org.springframework.stereotype.Component
 import ru.itmo.soa.lab.storage.model.organization.dto.NewOrganizationDto
 import ru.itmo.soa.lab.storage.model.organization.entity.Organization
-import ru.itmo.soa.lab.storage.utils.converter.DtoConverter
+import ru.itmo.soa.lab.storage.utils.DtoConverter
 
 @Component
 class NewOrganizationConverter : DtoConverter<Organization, NewOrganizationDto> {
