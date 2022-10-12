@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  os-storage-postgres:
+    container_name: os-storage-postgres
+    image: postgres:13.4-alpine
+    environment:
+      POSTGRES_USER: os-storage-postgres
+      POSTGRES_PASSWORD: os-storage-postgres
+      POSTGRES_DATABASE: os-storage-postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - os-network
+
+networks:
+  os-network:
+    name: os-network
