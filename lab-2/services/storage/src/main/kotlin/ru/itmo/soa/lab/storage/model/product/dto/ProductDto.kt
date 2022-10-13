@@ -1,5 +1,6 @@
 package ru.itmo.soa.lab.storage.model.product.dto
 
+import com.fasterxml.jackson.annotation.JsonRootName
 import ru.itmo.soa.lab.storage.model.organization.dto.OrganizationDto
 import ru.itmo.soa.lab.storage.model.product.entity.ProductId
 import ru.itmo.soa.lab.storage.model.product.entity.UnitOfMeasure
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
+@JsonRootName("product")
 data class ProductDto(
     /**
      * Значение поля должно быть больше 0,

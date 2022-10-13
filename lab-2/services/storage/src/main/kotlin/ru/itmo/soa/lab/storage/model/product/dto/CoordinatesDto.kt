@@ -1,9 +1,11 @@
 package ru.itmo.soa.lab.storage.model.product.dto
 
+import com.fasterxml.jackson.annotation.JsonRootName
 import javax.validation.constraints.Max
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotNull
 
+@JsonRootName("coordinates")
 data class CoordinatesDto(
     /**
      * Максимальное значение поля: 492,

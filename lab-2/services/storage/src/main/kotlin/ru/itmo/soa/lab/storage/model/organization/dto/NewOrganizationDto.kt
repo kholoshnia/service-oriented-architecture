@@ -1,10 +1,12 @@
 package ru.itmo.soa.lab.storage.model.organization.dto
 
+import com.fasterxml.jackson.annotation.JsonRootName
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
+@JsonRootName("newOrganization")
 data class NewOrganizationDto(
     /**
      * Поле не может быть null,

@@ -33,3 +33,4 @@ springdoc:
   swagger-ui:
     path: /swagger-ui
     supported-submit-methods: []
+    disable-swagger-default-url: true

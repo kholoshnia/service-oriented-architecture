@@ -6,8 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springdoc.api.annotations.ParameterObject
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -31,7 +33,7 @@ import javax.validation.constraints.Size
 
 @Tag(name = "Products", description = "Actions with the products")
 @RestController
-@RequestMapping("/api/v1/products")
+@RequestMapping("/api/v1/products", produces = [MediaType.APPLICATION_XML_VALUE])
 class ProductController(
     private val productService: ProductService
 ) {
@@ -117,5 +119,5 @@ class ProductController(
     fun getGreaterPartNumber(
         @RequestParam @Size(min = 25, max = 48) partNumber: String,
         @ParameterObject pageable: Pageable
-    ) = productService.getGreaterPartNumber(partNumber, pageable)
+    ): Page<ProductDto> = productService.getGreaterPartNumber(partNumber, pageable)
 }
