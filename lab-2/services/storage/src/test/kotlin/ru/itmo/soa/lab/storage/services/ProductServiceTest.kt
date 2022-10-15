@@ -135,6 +135,6 @@ class ProductServiceTest {
         assertThat(productService.getGreaterPartNumber(
             "test",
             PageRequest.of(0, 2)
-        ).content.map { it.id }).containsExactly(product1.id, product2.id)
+        ).data.map { it.id }).containsExactly(product1.id, product2.id)
     }
 }
