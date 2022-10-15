@@ -1,8 +1,8 @@
 package ru.itmo.soa.lab.storage.utils
 
+import ru.itmo.soa.lab.shared.dto.product.UnitOfMeasure
 import ru.itmo.soa.lab.storage.model.organization.entity.OrganizationId
 import ru.itmo.soa.lab.storage.model.product.entity.ProductId
-import ru.itmo.soa.lab.storage.model.product.entity.UnitOfMeasure
 import java.time.LocalDate
 
 data class ProductFilters(

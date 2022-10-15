@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
-import ru.itmo.soa.lab.storage.model.product.dto.NewProductDto
-import ru.itmo.soa.lab.storage.model.product.dto.ProductDto
+import ru.itmo.soa.lab.shared.dto.product.NewProductDto
+import ru.itmo.soa.lab.shared.dto.product.ProductDto
 import ru.itmo.soa.lab.storage.model.product.entity.ProductId
 import ru.itmo.soa.lab.storage.services.product.ProductService
 import ru.itmo.soa.lab.storage.utils.PageDtoManufactureCostGroupDto
@@ -119,5 +119,5 @@ class ProductController(
     fun getGreaterPartNumber(
         @RequestParam @Size(min = 25, max = 48) partNumber: String,
         @ParameterObject pageable: Pageable
-    ): Page<ProductDto> = productService.getGreaterPartNumber(partNumber, pageable)
+    ) = productService.getGreaterPartNumber(partNumber, pageable)
 }

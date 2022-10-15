@@ -5,14 +5,13 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import ru.itmo.soa.lab.shared.dto.product.NewProductDto
+import ru.itmo.soa.lab.shared.dto.product.ProductDto
 import ru.itmo.soa.lab.storage.model.product.converter.NewProductConverter
 import ru.itmo.soa.lab.storage.model.product.converter.ProductConverter
-import ru.itmo.soa.lab.storage.model.product.dto.NewProductDto
-import ru.itmo.soa.lab.storage.model.product.dto.ProductDto
 import ru.itmo.soa.lab.storage.model.product.entity.ProductId
 import ru.itmo.soa.lab.storage.model.product.repository.ProductRepository
 import ru.itmo.soa.lab.storage.services.organization.OrganizationService
-import ru.itmo.soa.lab.storage.utils.LoggerDelegate
 import ru.itmo.soa.lab.storage.utils.PageConverter
 import ru.itmo.soa.lab.storage.utils.ProductFilters
 
@@ -25,7 +24,6 @@ class ProductService(
     private val organizationService: OrganizationService,
 ) {
     companion object {
-        private val log by LoggerDelegate()
         private val maxPricePageRequest = PageRequest.of(0, 1, Sort.by("price").descending())
     }
 
@@ -54,9 +52,9 @@ class ProductService(
             newProduct.manufacturer = organizationService.addOrganization(newProduct.manufacturer!!)
         } else if (product.manufacturer != null && newProduct.manufacturer != null) {
             newProduct.manufacturer =
-                organizationService.updateOrganization(product.manufacturer.id, newProduct.manufacturer!!)
+                organizationService.updateOrganization(product.manufacturer!!.id, newProduct.manufacturer!!)
         } else if (product.manufacturer != null) {
-            organizationService.deleteOrganization(product.manufacturer.id)
+            organizationService.deleteOrganization(product.manufacturer!!.id)
         }
 
         return productConverter.toDto(productRepository.save(newProduct))
@@ -80,6 +78,6 @@ class ProductService(
         pageConverter.toDto(productRepository.findManufactureCostGroups(pageable))
 
     fun getGreaterPartNumber(partNumber: String, pageable: Pageable) =
-        productRepository.findByPartNumberGreaterThan(partNumber, pageable)
-            .map { productConverter.toDto(it) }
+        pageConverter.toDto(productRepository.findByPartNumberGreaterThan(partNumber, pageable)
+            .map { productConverter.toDto(it) })
 }

@@ -1,4 +1,4 @@
-package ru.itmo.soa.lab.storage.model.product.entity
+package ru.itmo.soa.lab.shared.dto.product
 
 enum class UnitOfMeasure {
     KILOGRAMS,

@@ -1,8 +1,8 @@
 package ru.itmo.soa.lab.storage.model.product.converter
 
 import org.springframework.stereotype.Component
+import ru.itmo.soa.lab.shared.dto.product.NewProductDto
 import ru.itmo.soa.lab.storage.model.organization.converter.NewOrganizationConverter
-import ru.itmo.soa.lab.storage.model.product.dto.NewProductDto
 import ru.itmo.soa.lab.storage.model.product.entity.Product
 import ru.itmo.soa.lab.storage.utils.DtoConverter
 

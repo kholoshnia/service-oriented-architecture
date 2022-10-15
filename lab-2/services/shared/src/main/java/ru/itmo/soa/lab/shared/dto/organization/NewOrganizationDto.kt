@@ -1,24 +1,13 @@
-package ru.itmo.soa.lab.storage.model.organization.dto
+package ru.itmo.soa.lab.shared.dto.organization
 
 import com.fasterxml.jackson.annotation.JsonRootName
-import ru.itmo.soa.lab.storage.model.organization.entity.OrganizationId
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
 import javax.validation.constraints.Size
 
-@JsonRootName("organization")
-class OrganizationDto(
-    /**
-     * Поле не может быть null,
-     * Значение поля должно быть больше 0,
-     * Значение этого поля должно быть уникальным,
-     * Значение этого поля должно генерироваться автоматически
-     */
-    @field:NotNull
-    @field:Min(1)
-    val id: OrganizationId,
-
+@JsonRootName("newOrganization")
+data class NewOrganizationDto(
     /**
      * Поле не может быть null,
      * Строка не может быть пустой

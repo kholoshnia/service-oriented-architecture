@@ -1,4 +1,4 @@
-package ru.itmo.soa.lab.storage.utils
+package ru.itmo.soa.lab.shared.dto.utils
 
 import com.fasterxml.jackson.annotation.JsonRootName
 

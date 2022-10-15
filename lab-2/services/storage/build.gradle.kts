@@ -18,17 +18,15 @@ configurations {
     compileOnly {
         extendsFrom(configurations.annotationProcessor.get())
     }
-    implementation.configure {
-        exclude(module = "spring-boot-starter-tomcat")
-        exclude("org.apache.tomcat")
-    }
 }
 
 dependencies {
-    compileOnly("javax.servlet:javax.servlet-api:4.0.1")
+    implementation(project(":shared"))
 
     implementation(kotlin("stdlib-jdk8"))
     implementation(kotlin("reflect"))
+
+    compileOnly("javax.servlet:javax.servlet-api:4.0.1")
 
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web") {
@@ -36,13 +34,11 @@ dependencies {
     }
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.slf4j:slf4j-api")
-    implementation("ch.qos.logback:logback-classic")
-    implementation("ch.qos.logback:logback-core")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
     implementation("org.springdoc:springdoc-openapi-kotlin:1.6.11")
     implementation("org.postgresql:postgresql:42.5.0")
 
+    testImplementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.assertj:assertj-core")

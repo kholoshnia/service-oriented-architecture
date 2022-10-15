@@ -4,7 +4,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
-import ru.itmo.soa.lab.storage.model.product.dto.ManufactureCostGroupDto
+import ru.itmo.soa.lab.shared.dto.product.ManufactureCostGroupDto
 import ru.itmo.soa.lab.storage.model.product.entity.Product
 import ru.itmo.soa.lab.storage.model.product.entity.ProductId
 import ru.itmo.soa.lab.storage.utils.ProductFilters
@@ -30,7 +30,7 @@ interface ProductRepository : JpaRepository<Product, ProductId> {
     fun findProductsPage(productFilters: ProductFilters, pageable: Pageable): Page<Product>
 
     @Query(
-        "select new ru.itmo.soa.lab.storage.model.product.dto.ManufactureCostGroupDto(" +
+        "select new ru.itmo.soa.lab.shared.dto.product.ManufactureCostGroupDto(" +
                 "p.manufactureCost, " +
                 "count(p.manufactureCost)) " +
                 "from Product as p " +

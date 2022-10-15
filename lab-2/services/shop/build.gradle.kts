@@ -10,10 +10,19 @@ version = "0.0.1"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
-    implementation("org.wildfly:wildfly-jaxrs:26.1.2.Final")
+    implementation(project(":shared"))
+
+    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("reflect"))
+
+    compileOnly("javax:javaee-api:8.0.1")
+    compileOnly("javax.ws.rs:javax.ws.rs-api:2.1.1")
+    compileOnly("javax.servlet:javax.servlet-api:4.0.1")
+    compileOnly("org.jboss.resteasy:resteasy-jaxrs:3.15.3.Final")
+
+    implementation("io.ktor:ktor-client:2.1.2")
+    implementation("io.ktor:ktor-client-apache:2.1.2")
+    implementation("io.ktor:ktor-client-logging:2.1.2")
 }
 
 tasks.withType<KotlinCompile> {

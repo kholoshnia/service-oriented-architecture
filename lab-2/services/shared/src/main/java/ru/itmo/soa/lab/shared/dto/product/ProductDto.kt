@@ -1,9 +1,7 @@
-package ru.itmo.soa.lab.storage.model.product.dto
+package ru.itmo.soa.lab.shared.dto.product
 
 import com.fasterxml.jackson.annotation.JsonRootName
-import ru.itmo.soa.lab.storage.model.organization.dto.OrganizationDto
-import ru.itmo.soa.lab.storage.model.product.entity.ProductId
-import ru.itmo.soa.lab.storage.model.product.entity.UnitOfMeasure
+import ru.itmo.soa.lab.shared.dto.organization.OrganizationDto
 import java.time.LocalDate
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
@@ -19,7 +17,7 @@ data class ProductDto(
      */
     @field:Min(1)
     @field:NotNull
-    val id: ProductId,
+    val id: Int,
 
     /**
      * Поле не может быть null,

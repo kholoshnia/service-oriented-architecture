@@ -3,8 +3,9 @@ package ru.itmo.soa.lab.storage.model.product.dto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
+import ru.itmo.soa.lab.shared.dto.product.ProductDto
+import ru.itmo.soa.lab.shared.dto.product.UnitOfMeasure
 import ru.itmo.soa.lab.storage.DtoUtil
-import ru.itmo.soa.lab.storage.model.product.entity.UnitOfMeasure
 import java.time.LocalDate
 import javax.validation.Validation
 

@@ -2,8 +2,10 @@ package ru.itmo.soa.lab.storage.model.product.entity
 
 import org.hibernate.annotations.Check
 import org.hibernate.annotations.CreationTimestamp
+import ru.itmo.soa.lab.shared.dto.product.UnitOfMeasure
 import ru.itmo.soa.lab.storage.model.organization.entity.Organization
 import java.time.LocalDate
+import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Embedded
 import javax.persistence.Entity
@@ -72,7 +74,7 @@ class Product(
     /**
      * Поле может быть null
      */
-    @field:ManyToOne
+    @field:ManyToOne(cascade = [CascadeType.REMOVE])
     var manufacturer: Organization?,
 ) {
     /**

@@ -1,11 +1,11 @@
 package ru.itmo.soa.lab.storage
 
-import ru.itmo.soa.lab.storage.model.organization.dto.NewOrganizationDto
-import ru.itmo.soa.lab.storage.model.organization.dto.OrganizationDto
-import ru.itmo.soa.lab.storage.model.product.dto.CoordinatesDto
-import ru.itmo.soa.lab.storage.model.product.dto.NewProductDto
-import ru.itmo.soa.lab.storage.model.product.dto.ProductDto
-import ru.itmo.soa.lab.storage.model.product.entity.UnitOfMeasure
+import ru.itmo.soa.lab.shared.dto.organization.NewOrganizationDto
+import ru.itmo.soa.lab.shared.dto.organization.OrganizationDto
+import ru.itmo.soa.lab.shared.dto.product.CoordinatesDto
+import ru.itmo.soa.lab.shared.dto.product.NewProductDto
+import ru.itmo.soa.lab.shared.dto.product.ProductDto
+import ru.itmo.soa.lab.shared.dto.product.UnitOfMeasure
 import java.time.LocalDate
 
 object DtoUtil {

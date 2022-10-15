@@ -1,8 +1,7 @@
-package ru.itmo.soa.lab.storage.model.product.dto
+package ru.itmo.soa.lab.shared.dto.product
 
 import com.fasterxml.jackson.annotation.JsonRootName
-import ru.itmo.soa.lab.storage.model.organization.dto.NewOrganizationDto
-import ru.itmo.soa.lab.storage.model.product.entity.UnitOfMeasure
+import ru.itmo.soa.lab.shared.dto.organization.NewOrganizationDto
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull

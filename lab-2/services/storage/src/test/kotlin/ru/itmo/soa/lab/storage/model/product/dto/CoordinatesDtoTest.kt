@@ -3,6 +3,7 @@ package ru.itmo.soa.lab.storage.model.product.dto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
+import ru.itmo.soa.lab.shared.dto.product.CoordinatesDto
 import ru.itmo.soa.lab.storage.DtoUtil
 import javax.validation.Validation
 

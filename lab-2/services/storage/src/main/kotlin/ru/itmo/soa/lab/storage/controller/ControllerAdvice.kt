@@ -2,12 +2,13 @@ package ru.itmo.soa.lab.storage.controller
 
 import org.postgresql.util.PSQLException
 import org.springframework.dao.DataIntegrityViolationException
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import ru.itmo.soa.lab.storage.services.product.ProductNotFoundException
-import ru.itmo.soa.lab.storage.utils.AdviceUtil.errorResponse
 import ru.itmo.soa.lab.storage.utils.BaseException
+import ru.itmo.soa.lab.storage.utils.errorResponse
 import javax.validation.ValidationException
 
 @RestControllerAdvice
@@ -24,4 +25,7 @@ class ControllerAdvice {
 
     @ExceptionHandler(ProductNotFoundException::class)
     fun handleProductNotFound(e: ProductNotFoundException) = errorResponse(e, HttpStatus.NOT_FOUND)
+
+    @ExceptionHandler(EmptyResultDataAccessException::class)
+    fun handleProductNotFound(e: EmptyResultDataAccessException) = errorResponse(e, HttpStatus.NOT_FOUND)
 }

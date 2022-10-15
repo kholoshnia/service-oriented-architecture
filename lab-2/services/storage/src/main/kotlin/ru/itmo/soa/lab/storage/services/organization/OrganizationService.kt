@@ -11,7 +11,7 @@ class OrganizationService(
     private val organizationRepository: OrganizationRepository,
 ) {
     @Transactional
-    fun addOrganization(organization: Organization) =
+    fun addOrganization(organization: Organization): Organization =
         organizationRepository.save(organization)
 
     fun getOrganizationById(organizationId: OrganizationId): Organization =
