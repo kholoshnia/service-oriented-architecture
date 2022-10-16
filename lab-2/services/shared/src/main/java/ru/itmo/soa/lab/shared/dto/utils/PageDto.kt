@@ -6,6 +6,6 @@ import com.fasterxml.jackson.annotation.JsonRootName
 open class PageDto<T>(
     val page: Int,
     val size: Int,
-    val total: Int,
+    val total: Long,
     val data: List<T>
 )

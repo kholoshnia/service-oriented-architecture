@@ -9,7 +9,7 @@ class PageConverter {
     fun <T> toDto(entity: Page<T>) = PageDto<T>(
         entity.number + 1,
         entity.size,
-        entity.totalPages,
+        entity.totalElements,
         entity.content
     )
 }

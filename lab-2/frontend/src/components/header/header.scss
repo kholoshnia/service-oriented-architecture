@@ -1,0 +1,23 @@
+.header-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  float: left;
+  height: 31px;
+  margin: 16px 24px 16px 0;
+
+  &__title {
+    margin-bottom: 0 !important;
+    margin-left: 15px;
+    color: #dedede !important;
+  }
+}
+
+.header-menu {
+  float: right;
+  min-width: 330px;
+
+  @media (max-width: 660px) {
+    min-width: auto;
+  }
+}

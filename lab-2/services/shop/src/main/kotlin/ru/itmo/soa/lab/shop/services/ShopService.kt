@@ -2,7 +2,6 @@ package ru.itmo.soa.lab.shop.services
 
 import kotlinx.coroutines.runBlocking
 import ru.itmo.soa.lab.shared.dto.product.UnitOfMeasure
-import ru.itmo.soa.lab.shop.utils.PageableParams
 import ru.itmo.soa.lab.shop.utils.toResponse
 import javax.enterprise.context.ApplicationScoped
 import javax.inject.Inject
@@ -14,15 +13,15 @@ open class ShopService {
 
     open fun getProductsByManufacturer(
         manufacturerId: Int,
-        pageableParams: PageableParams,
+        queryString: String?,
     ) = runBlocking {
-        return@runBlocking toResponse(storageClient.getProductsByManufacturer(manufacturerId, pageableParams))
+        return@runBlocking toResponse(storageClient.getProductsByManufacturer(manufacturerId, queryString))
     }
 
     open fun getProductsByUnitOfMeasure(
         unitOfMeasure: UnitOfMeasure,
-        pageableParams: PageableParams,
+        queryString: String?,
     ) = runBlocking {
-        return@runBlocking toResponse(storageClient.getProductsByUnitOfMeasure(unitOfMeasure, pageableParams))
+        return@runBlocking toResponse(storageClient.getProductsByUnitOfMeasure(unitOfMeasure, queryString))
     }
 }

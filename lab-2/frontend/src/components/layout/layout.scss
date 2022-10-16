@@ -1,0 +1,14 @@
+.layout {
+  min-height: 100vh;
+
+  &__content {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    padding: 20px 50px;
+  }
+
+  &__footer {
+    text-align: center;
+  }
+}

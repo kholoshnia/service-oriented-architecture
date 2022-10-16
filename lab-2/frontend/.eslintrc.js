@@ -7,7 +7,6 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:import/errors',
     'plugin:import/typescript',
-    'plugin:react/recommended',
     'plugin:react-hooks/recommended',
   ],
   plugins: ['prettier', 'node', 'import', 'unused-imports', 'jsx-a11y'],
@@ -104,10 +103,6 @@ module.exports = {
     'import/no-unresolved': 'off',
     'react-hooks/exhaustive-deps': 'off',
     'react/react-in-jsx-scope': 'off',
-
-    // TODO fix while refactoring and remove
-    // TODO remove all unnecessary eslint-disable-next-line in code
-    'react/jsx-no-target-blank': 'warn',
-    'node/no-extraneous-require': 'warn',
+    'node/no-extraneous-import': 'off',
   },
 };

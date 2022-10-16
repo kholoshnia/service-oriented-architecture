@@ -1,7 +1,5 @@
 import { FC } from 'react';
 
-const Storage: FC = () => (
-  <div>Storage</div>
-)
+const Storage: FC = () => <div>Storage</div>;
 
-export default Storage
+export default Storage;

@@ -1,25 +1,16 @@
 import React, { FC } from 'react';
 
-import 'antd/dist/antd.css';
-import './App.css';
-import { Radio } from 'antd';
-import { Typography } from 'antd';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { Spin } from 'antd';
+import { RouterProvider } from 'react-router';
 
-const { Title } = Typography;
+import queryClient from 'config/quiery-client';
+import router from 'router';
 
-const App: FC = () => {
-  return (
-    <div className="app">
-      <Title>h1. Ant Design</Title>
-
-      <Radio.Group defaultValue="a" buttonStyle="solid">
-        <Radio.Button value="a">Hangzhou</Radio.Button>
-        <Radio.Button value="b">Shanghai</Radio.Button>
-        <Radio.Button value="c">Beijing</Radio.Button>
-        <Radio.Button value="d">Chengdu</Radio.Button>
-      </Radio.Group>
-    </div>
-  );
-}
+const App: FC = () => (
+  <QueryClientProvider client={queryClient}>
+    <RouterProvider router={router} fallbackElement={<Spin />} />
+  </QueryClientProvider>
+);
 
 export default App;

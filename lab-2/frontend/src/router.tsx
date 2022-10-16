@@ -1,20 +1,32 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+
+import Layout from 'components/layout';
+import Delivery from 'pages/delivery';
 import Shop from 'pages/shop';
 import Storage from 'pages/storage';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <div>Hello world!</div>,
+    element: <Navigate to="/shop" />,
   },
   {
-    path: '/shop',
-    element: <Shop/>
+    element: <Layout />,
+    children: [
+      {
+        path: '/shop',
+        element: <Shop />,
+      },
+      {
+        path: '/storage',
+        element: <Storage />,
+      },
+      {
+        path: '/delivery',
+        element: <Delivery />,
+      },
+    ],
   },
-  {
-    path: '/storage',
-    element: <Storage/>
-  }
 ]);
 
 export default router;
