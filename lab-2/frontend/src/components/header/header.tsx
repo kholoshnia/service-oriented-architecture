@@ -1,7 +1,13 @@
 import React, { FC } from 'react';
 import './header.scss';
 
-import { ShopOutlined, DatabaseOutlined, CarOutlined } from '@ant-design/icons';
+import {
+  ShopOutlined,
+  DatabaseOutlined,
+  CarOutlined,
+  GroupOutlined,
+  FieldNumberOutlined,
+} from '@ant-design/icons';
 import { Menu, MenuProps, Typography } from 'antd';
 import { useLocation, useNavigate } from 'react-router';
 
@@ -14,7 +20,9 @@ const pathToKey: {
 } = {
   '/shop': 1,
   '/storage': 2,
-  '/delivery': 3,
+  '/groups': 3,
+  '/part-number': 4,
+  '/delivery': 5,
 };
 
 const Header: FC = () => {
@@ -36,6 +44,18 @@ const Header: FC = () => {
     },
     {
       key: 3,
+      label: 'Groups',
+      icon: <GroupOutlined />,
+      onClick: () => navigate('/groups'),
+    },
+    {
+      key: 4,
+      label: 'Part number',
+      icon: <FieldNumberOutlined />,
+      onClick: () => navigate('/part-number'),
+    },
+    {
+      key: 5,
       label: 'Delivery',
       icon: <CarOutlined />,
       onClick: () => navigate('/delivery'),

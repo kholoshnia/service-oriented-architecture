@@ -1,4 +1,5 @@
 import { NewOrganization, Organization } from 'models/organization';
+import { DateString } from 'models/utils';
 
 export enum UnitOfMeasure {
   KILOGRAMS = 'KILOGRAMS',
@@ -17,7 +18,7 @@ export type ProductId = number;
 
 export type Product = {
   id: ProductId;
-  creationDate: Date;
+  creationDate: DateString;
   name: string;
   coordinates: Coordinates;
   price: number;
@@ -37,7 +38,7 @@ export type NewProduct = {
   manufacturer?: NewOrganization;
 };
 
-export type ManufactureCostGroupDto = {
+export type ManufactureCostGroup = {
   manufactureCost: number;
   count: number;
 };

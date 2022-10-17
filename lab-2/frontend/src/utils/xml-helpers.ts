@@ -2,7 +2,9 @@ import { XMLBuilder, XMLParser } from 'fast-xml-parser';
 
 const xmlParser = new XMLParser();
 
-export const parseXml = (xml: string | Buffer) => {
+export const parseXml = (xml?: string | Buffer) => {
+  if (!xml) return undefined;
+
   const parsed = xmlParser.parse(xml);
   const result = parsed[Object.keys(parsed)[0]];
 
@@ -20,5 +22,6 @@ export const parseXml = (xml: string | Buffer) => {
 const xmlBuilder = new XMLBuilder({});
 
 export const toXml = (obj: any) => {
+  if (!obj) return undefined;
   return `<new>${xmlBuilder.build(obj)}</new>`;
 };

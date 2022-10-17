@@ -19,8 +19,9 @@ const usePaginatedQuery = <Item>(
   });
 
   const pagination = paginationQuery as PaginationParams;
-  const setPagination = (pagination: PaginationParams) =>
+  const setPagination = (pagination: PaginationParams) => {
     setPaginationQuery(pagination);
+  };
 
   const [total, setTotal] = useState<number>(0);
 
@@ -40,9 +41,9 @@ const usePaginatedQuery = <Item>(
 
   return {
     ...query,
+    total,
     pagination,
     setPagination,
-    total,
   };
 };
 

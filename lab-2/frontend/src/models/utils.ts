@@ -1,4 +1,4 @@
-export type Date = string;
+export type DateString = string;
 
 export type Page<Data> = {
   page: number;

@@ -1,19 +1,14 @@
 import { FC, useMemo } from 'react';
 
-import { Table, TablePaginationConfig, Tooltip } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+import { Table } from 'antd';
 
+import useProductColumns from 'hooks/use-product-columns';
 import { Product } from 'models/product';
 import { PaginationParams } from 'models/utils';
+import { getFilterParams } from 'utils/filter-helpers';
 import setIdKeys from 'utils/id-keys';
-import {
-  formatDate,
-  getDateOnly,
-  ProductColumns,
-  productsToColumns,
-} from 'utils/product-helpers';
-import { setSortParams, getSortParams } from 'utils/sort-helpers';
-import { shortenString } from 'utils/string-helpers';
+import { ProductColumns, productsToColumns } from 'utils/product-helpers';
+import { getSortParams } from 'utils/sort-helpers';
 
 type ProductTableProps = {
   products?: Product[];
@@ -21,114 +16,13 @@ type ProductTableProps = {
   total: number;
   pagination: PaginationParams;
   onPagination: (pagination: PaginationParams) => void;
+  filters?: ProductColumns;
+  onFilters?: (filters?: ProductColumns) => void;
+  actions?: boolean;
+  refetch?: () => void;
+  editable?: boolean;
+  fixName?: boolean;
 };
-
-const columns: ColumnsType<ProductColumns> = [
-  {
-    title: 'ID',
-    dataIndex: 'id',
-    key: 'id',
-    sorter: { multiple: 1 },
-    fixed: 'left',
-  },
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    sorter: { multiple: 1 },
-    fixed: 'left',
-  },
-  {
-    title: 'Created',
-    dataIndex: 'creationDate',
-    key: 'creationDate',
-    sorter: { multiple: 1 },
-    render: creationDate => (
-      <Tooltip title={formatDate(creationDate)}>
-        {getDateOnly(creationDate)}
-      </Tooltip>
-    ),
-  },
-  {
-    title: 'Coordinates',
-    children: [
-      {
-        title: 'X',
-        dataIndex: 'coordinatesX',
-        key: 'coordinates.x',
-        sorter: { multiple: 1 },
-      },
-      {
-        title: 'Y',
-        dataIndex: 'coordinatesY',
-        key: 'coordinates.y',
-        sorter: { multiple: 1 },
-      },
-    ],
-  },
-  {
-    title: 'Price',
-    dataIndex: 'price',
-    key: 'price',
-    sorter: { multiple: 1 },
-  },
-  {
-    title: 'Part number',
-    dataIndex: 'partNumber',
-    key: 'partNumber',
-    sorter: { multiple: 1 },
-    render: partNumber => (
-      <Tooltip title={partNumber}>{shortenString(partNumber, 15)}</Tooltip>
-    ),
-  },
-  {
-    title: 'Cost',
-    dataIndex: 'manufactureCost',
-    key: 'manufactureCost',
-    sorter: { multiple: 1 },
-  },
-  {
-    title: 'Unit of measure',
-    dataIndex: 'unitOfMeasure',
-    key: 'unitOfMeasure',
-    sorter: { multiple: 1 },
-  },
-  {
-    title: 'Manufacturer',
-    children: [
-      {
-        title: 'ID',
-        dataIndex: 'manufacturerId',
-        key: 'manufacturer.id',
-        sorter: { multiple: 1 },
-      },
-      {
-        title: 'Name',
-        dataIndex: 'manufacturerName',
-        key: 'manufacturer.name',
-        sorter: { multiple: 1 },
-      },
-      {
-        title: 'Full name',
-        dataIndex: 'manufacturerFullName',
-        key: 'manufacturer.fullName',
-        sorter: { multiple: 1 },
-      },
-      {
-        title: 'Annual turnover',
-        dataIndex: 'manufacturerAnnualTurnover',
-        key: 'manufacturer.annualTurnover',
-        sorter: { multiple: 1 },
-      },
-      {
-        title: 'Employees count',
-        dataIndex: 'manufacturerEmployeesCount',
-        key: 'manufacturer.employeesCount',
-        sorter: { multiple: 1 },
-      },
-    ],
-  },
-];
 
 const ProductTable: FC<ProductTableProps> = ({
   products = [],
@@ -136,21 +30,27 @@ const ProductTable: FC<ProductTableProps> = ({
   total,
   pagination,
   onPagination,
+  filters,
+  onFilters,
+  actions,
+  refetch,
+  fixName,
 }) => {
+  const columns = useProductColumns({
+    pagination,
+    filters,
+    onFilters,
+    actions,
+    refetch,
+    fixName,
+  });
+
   const dataSource = useMemo(
     () => setIdKeys(productsToColumns(products)),
     [products]
   );
 
-  const paginationParams: TablePaginationConfig = {
-    total,
-    defaultCurrent: pagination.page,
-    pageSize: pagination.size,
-    pageSizeOptions: [5, 10, 20],
-    defaultPageSize: 5,
-    showSizeChanger: true,
-    onChange: (page, size) => onPagination({ ...pagination, page, size }),
-  };
+  const onFiltersChange = filters => onFilters?.(getFilterParams(filters));
 
   const onSortChange = sort =>
     onPagination({ ...pagination, sort: getSortParams(sort) });
@@ -160,11 +60,23 @@ const ProductTable: FC<ProductTableProps> = ({
       bordered
       size="middle"
       scroll={{ x: true }}
-      columns={setSortParams(columns, pagination.sort)}
+      columns={columns}
       dataSource={dataSource}
       loading={loading}
-      pagination={paginationParams}
-      onChange={(_pagination, _, sort) => onSortChange(sort)}
+      pagination={{
+        total,
+        current: pagination.page ?? 1,
+        pageSize: pagination.size ?? 5,
+        showSizeChanger: true,
+        pageSizeOptions: [5, 10, 20],
+        defaultPageSize: 5,
+        size: 'default',
+        onChange: (page, size) => onPagination({ ...pagination, page, size }),
+      }}
+      onChange={(pagination, filters, sort) => {
+        onFiltersChange(filters);
+        onSortChange(sort);
+      }}
     />
   );
 };

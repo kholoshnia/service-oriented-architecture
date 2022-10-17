@@ -12,7 +12,7 @@ type UnitOfMeasureFilterProps = {
   className?: string;
 };
 
-const unitsOfMeasure = Object.values(UnitOfMeasure);
+export const unitsOfMeasure = Object.values(UnitOfMeasure);
 
 const UnitOfMeasureFilter: FC<UnitOfMeasureFilterProps> = ({
   value,
@@ -21,12 +21,13 @@ const UnitOfMeasureFilter: FC<UnitOfMeasureFilterProps> = ({
 }) => (
   <Select
     className={classNames('unit-of-measure-filter', className)}
+    defaultValue={UnitOfMeasure.KILOGRAMS}
     value={value}
     onChange={onChange}
   >
     {unitsOfMeasure.map(unitOfMeasure => (
       <Select.Option key={unitOfMeasure} value={unitOfMeasure}>
-        {unitOfMeasure}
+        {unitOfMeasure.toLowerCase()}
       </Select.Option>
     ))}
   </Select>

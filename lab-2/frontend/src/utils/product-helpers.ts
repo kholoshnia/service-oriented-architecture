@@ -1,9 +1,10 @@
 import { OrganizationId } from 'models/organization';
 import { Product, ProductId, UnitOfMeasure } from 'models/product';
+import { DateString } from 'models/utils';
 
 export type ProductColumns = {
   id: ProductId;
-  creationDate: Date;
+  creationDate: DateString;
   name: string;
   coordinatesX: number;
   coordinatesY: number;

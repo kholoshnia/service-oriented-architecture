@@ -1,9 +1,9 @@
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import './shop.scss';
 
-import { FilterOutlined } from '@ant-design/icons';
+import { FilterOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Button, InputNumber, Select, Typography } from 'antd';
-import { StringParam, useQueryParam } from 'use-query-params';
+import { NumberParam, StringParam, useQueryParam } from 'use-query-params';
 
 import ProductTable from 'components/product-table';
 import UnitOfMeasureFilter from 'components/unit-of-measure-filter/unit-of-measure-filter';
@@ -15,38 +15,49 @@ import getEmptyPage from 'utils/empty-page';
 type ShopFilter = 'MANUFACTURER' | 'UNIT_OF_MEASURE';
 
 const shopFilters: { [key in ShopFilter]: string } = {
-  MANUFACTURER: 'manufacturer',
   UNIT_OF_MEASURE: 'unit of measure',
+  MANUFACTURER: 'manufacturer',
 };
 
 const shopFilterKeys = Object.keys(shopFilters) as ShopFilter[];
 
 const Shop: FC = () => {
-  const [selectedFilter, setSelectedFilter] = useQueryParam(
+  const [selectedFilter = 'UNIT_OF_MEASURE', setSelectedFilter] = useQueryParam(
     'filter',
     StringParam
   );
 
-  const [unitOfMeasure, setUnitOfMeasure] = useState(UnitOfMeasure.KILOGRAMS);
-  const [manufacturerId, setManufacturerId] = useState<number | null>();
+  const [unitOfMeasure = UnitOfMeasure.KILOGRAMS, setUnitOfMeasure] =
+    useQueryParam('unitOfMeasure', StringParam);
+  const [manufacturerId, setManufacturerId] = useQueryParam(
+    'manufacturer',
+    NumberParam
+  );
 
   const {
     data: products,
     refetch,
     isLoading,
     isError,
+    total,
     pagination,
     setPagination,
-    total,
-  } = usePaginatedQuery(['shop-products', selectedFilter], pagination => {
+  } = usePaginatedQuery(['shop-products'], pagination => {
     if (selectedFilter === 'MANUFACTURER' && manufacturerId) {
       return shopApi.getProductsByManufacturer(manufacturerId, pagination);
     }
     if (selectedFilter === 'UNIT_OF_MEASURE') {
-      return shopApi.getProductsByUnitOfMeasure(unitOfMeasure, pagination);
+      return shopApi.getProductsByUnitOfMeasure(
+        unitOfMeasure as UnitOfMeasure,
+        pagination
+      );
     }
     return Promise.resolve(getEmptyPage<Product>());
   });
+
+  const reset = () => {
+    setSelectedFilter(undefined, 'replace');
+  };
 
   return (
     <div className="shop">
@@ -85,19 +96,36 @@ const Shop: FC = () => {
               <span>Select unit of measure</span>
               <UnitOfMeasureFilter
                 className="shop__unit-of-measure-select"
-                value={unitOfMeasure}
-                onChange={setUnitOfMeasure}
+                value={unitOfMeasure as UnitOfMeasure}
+                onChange={value => setUnitOfMeasure(value as any)}
               />
             </>
           )}
         </div>
-        <Button
-          type="primary"
-          icon={<FilterOutlined />}
-          onClick={() => refetch()}
-        >
-          Filter
-        </Button>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Button
+            style={{ marginRight: '1rem', width: '100%' }}
+            icon={<ReloadOutlined />}
+            onClick={reset}
+          >
+            Reset
+          </Button>
+          <Button
+            style={{ width: '100%' }}
+            type="primary"
+            icon={<FilterOutlined />}
+            onClick={() => {
+              setPagination({
+                page: undefined,
+                size: undefined,
+                sort: undefined,
+              });
+              refetch();
+            }}
+          >
+            Filter
+          </Button>
+        </div>
       </section>
       {isError && (
         <div className="shop__error">
@@ -112,6 +140,7 @@ const Shop: FC = () => {
         total={total}
         pagination={pagination}
         onPagination={setPagination}
+        fixName={true}
       />
     </div>
   );

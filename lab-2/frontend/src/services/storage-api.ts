@@ -1,11 +1,12 @@
 import {
-  ManufactureCostGroupDto,
+  ManufactureCostGroup,
   NewProduct,
   Product,
   ProductId,
 } from 'models/product';
 import { Page, PaginationParams } from 'models/utils';
 import { storageClient } from 'utils/axios-clients';
+import { ProductColumns } from 'utils/product-helpers';
 
 const storageApi = {
   getProductById: (productId: ProductId) =>
@@ -17,28 +18,33 @@ const storageApi = {
   deleteProduct: (productId: ProductId) =>
     storageClient.delete(`/products/${productId}`),
 
-  getProducts: (paginationParams?: PaginationParams) =>
-    storageClient.get<Page<Product>>('/products', { params: paginationParams }),
+  getProducts: (
+    paginationParams?: PaginationParams,
+    filterParams?: ProductColumns
+  ) =>
+    storageClient.get<Page<Product>>('/products', {
+      params: { ...paginationParams, ...filterParams },
+    }),
 
   addProduct: (newProduct: NewProduct) =>
     storageClient.post<Product>('/products', newProduct),
 
-  addProductWithMaxPrice: () =>
+  getProductWithMaxPrice: () =>
     storageClient.get<Product>('/products/max-price'),
 
   getManufactureCostGroups: (paginationParams?: PaginationParams) =>
-    storageClient.get<Page<ManufactureCostGroupDto>>('/products/max-price', {
-      params: paginationParams,
-    }),
+    storageClient.get<Page<ManufactureCostGroup>>(
+      '/products/manufacture-cost-groups',
+      { params: paginationParams }
+    ),
 
   getProductsWithGreaterPartNumber: (
     partNumber: string,
     paginationParams?: PaginationParams
   ) =>
-    storageClient.get<Page<ManufactureCostGroupDto>>(
-      '/products/greater-part-number',
-      { params: { ...paginationParams, partNumber } }
-    ),
+    storageClient.get<Page<Product>>('/products/greater-part-number', {
+      params: { ...paginationParams, partNumber },
+    }),
 };
 
 export default storageApi;

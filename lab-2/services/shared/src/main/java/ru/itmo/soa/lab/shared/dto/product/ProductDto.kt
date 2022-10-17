@@ -31,6 +31,7 @@ data class ProductDto(
      * Строка не может быть пустой
      */
     @field:NotBlank
+    @field:NotNull
     val name: String,
 
     /**

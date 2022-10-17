@@ -15,9 +15,15 @@
 
 .header-menu {
   float: right;
-  min-width: 330px;
+  min-width: 600px;
+
+  @media (max-width: 1000px) {
+    min-width: auto;
+    width: 300px;
+  }
 
   @media (max-width: 660px) {
     min-width: auto;
+    width: 20px;
   }
 }

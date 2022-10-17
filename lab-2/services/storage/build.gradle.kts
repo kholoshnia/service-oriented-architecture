@@ -37,6 +37,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
     implementation("org.springdoc:springdoc-openapi-kotlin:1.6.11")
     implementation("org.postgresql:postgresql:42.5.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.4")
 
     testImplementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
