@@ -1,26 +1,14 @@
 import { useState } from 'react';
 
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
-import { notification } from 'antd';
+import { QueryKey, useQuery, UseQueryOptions } from '@tanstack/react-query';
 import { AxiosError, AxiosResponse } from 'axios';
 import { ArrayParam, NumberParam, useQueryParams } from 'use-query-params';
 
 import { Page, PaginationParams } from 'models/utils';
-
-export const processServerError = (e: AxiosError) => {
-  if (e.response && e.response.status >= 500) {
-    notification['error']({
-      message: 'Server error!',
-      description:
-        typeof e.response.data === 'object'
-          ? (e.response.data as any).error
-          : String(e.response.data),
-    });
-  }
-};
+import processServerError from 'utils/server-error';
 
 const usePaginatedQuery = <Item>(
-  queryKey: any,
+  queryKey: QueryKey,
   queryFn: (pagination: PaginationParams) => Promise<AxiosResponse<Page<Item>>>,
   options?: UseQueryOptions<Item[], AxiosError>
 ) => {

@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse, CustomParamsSerializer } from 'axios';
-import { parseXml, toXml } from 'utils/xml';
+import { parseXml, toXml } from 'utils/xml-helpers';
 import qs from 'qs'
 
 const serializeParams: CustomParamsSerializer = (params) => qs.stringify(params, {

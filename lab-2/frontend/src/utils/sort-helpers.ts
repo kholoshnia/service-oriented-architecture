@@ -1,29 +1,32 @@
 import { ColumnsType } from 'antd/es/table';
 import { SorterResult } from 'antd/lib/table/interface';
 
-const orderToShort = {
+const antdToPage = {
   ascend: 'asc',
   descend: 'desc',
 };
 
-const shortToOrder: any = {
+export const getSortParams = <Data>(
+  sortResult: SorterResult<Data> | SorterResult<Data>[]
+) =>
+  (Array.isArray(sortResult) ? sortResult : [sortResult])
+    .map(s => (s.order ? `${s.columnKey},${antdToPage[s.order]}` : ''))
+    .filter(s => s !== '');
+
+const pageToAntd = {
   asc: 'ascend',
   desc: 'descend',
 };
 
-export const getSort = <Data>(
-  sortResult: SorterResult<Data> | SorterResult<Data>[]
-) =>
-  (Array.isArray(sortResult) ? sortResult : [sortResult])
-    .map(s => (s.order ? `${s.columnKey},${orderToShort[s.order]}` : ''))
-    .filter(s => s !== '');
-
-export const addSort = <Data>(columns: ColumnsType<Data>, sort?: string[]) => {
+export const setSortParams = <Data>(
+  columns: ColumnsType<Data>,
+  sort?: string[]
+) => {
   if (!sort) return columns;
 
   const sortDirections: any = sort.reduce((acc: any, cur) => {
     const [key, value] = cur.split(',');
-    acc[key] = shortToOrder[value];
+    acc[key] = pageToAntd[value];
     return acc;
   }, {});
 
