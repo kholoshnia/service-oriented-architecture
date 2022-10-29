@@ -6,7 +6,7 @@ import { AxiosError } from 'axios';
 
 import GroupsTable from 'components/groups-table';
 import usePaginatedQuery from 'hooks/use-paginated-query';
-import storageApi from 'services/storage-api';
+import productsApi from 'services/storage/products-api';
 import { getErrorMessage } from 'utils/server-error';
 
 const Groups: FC = () => {
@@ -18,8 +18,8 @@ const Groups: FC = () => {
     total,
     pagination,
     setPagination,
-  } = usePaginatedQuery(['storage-groups'], pagination =>
-    storageApi.getManufactureCostGroups(pagination)
+  } = usePaginatedQuery('groups', pagination =>
+    productsApi.getManufactureCostGroups(pagination)
   );
 
   return (

@@ -3,7 +3,7 @@ import { FC, useState } from 'react';
 import { SearchOutlined } from '@ant-design/icons';
 import { Button, Space } from 'antd';
 
-import { ProductColumns } from 'utils/product-helpers';
+import { ProductFilters } from 'models/product';
 
 export type FilterProps = {
   inputRef: any;
@@ -14,8 +14,8 @@ export type FilterProps = {
 
 type FilterDropdownProps = {
   confirm: () => void;
-  filters: ProductColumns;
-  onFilters?: (filters?: ProductColumns) => void;
+  filters: ProductFilters;
+  onFilters?: (filters?: ProductFilters) => void;
   dataIndex: string;
   FilterInput: FC<FilterProps>;
   inputRef: any;

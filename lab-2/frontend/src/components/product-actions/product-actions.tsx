@@ -6,7 +6,7 @@ import { Button, notification, Popconfirm } from 'antd';
 import { AxiosError } from 'axios';
 
 import NewProductModal from 'components/new-product-modal';
-import storageApi from 'services/storage-api';
+import productsApi from 'services/storage/products-api';
 import { ProductColumns } from 'utils/product-helpers';
 import { showError } from 'utils/server-error';
 
@@ -23,7 +23,7 @@ const ProductActions: FC<ProductActionsProps> = ({
 
   const { mutate: deleteProduct } = useMutation(
     ['delete-product'],
-    storageApi.deleteProduct,
+    productsApi.deleteProduct,
     {
       onError: (e: AxiosError) => showError(e, 'Could not delete product!'),
       onSuccess: () => {

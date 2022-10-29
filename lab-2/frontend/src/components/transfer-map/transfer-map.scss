@@ -1,0 +1,76 @@
+.transfer-map {
+  background-color: white;
+  height: 75vh;
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  padding: 50px 50px 68.85px;
+  background-image: url('../../assets/images/city-map.jpg');
+  background-size: 700px 700px;
+  overflow: hidden;
+
+  &__content {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    min-width: 500px;
+    min-height: 500px;
+  }
+
+  &__organization {
+    cursor: pointer;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.1));
+  }
+
+  &__truck {
+    cursor: pointer;
+    position: absolute;
+    transform: translate(-50%, -50%) rotate(180deg);
+    transition: all .3s ease-out;
+  }
+
+  &__truck-image {
+    opacity: 0.7;
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.1));
+  }
+
+  &__controlled-truck {
+    opacity: 1;
+    //$color: #2fc737;
+    //filter: drop-shadow(2px 2px 0 $color)
+    //        drop-shadow(-2px 2px 0 $color)
+    //        drop-shadow(2px -2px 0 $color)
+    //        drop-shadow(-2px -2px 0 $color);
+  }
+
+  &__organization-name {
+    text-align: center;
+    font-weight: bold;
+    font-size: 12px;
+    margin-top: 0.2rem;
+  }
+}
+
+.store-tooltip {
+  font-size: 12px;
+  z-index: 1;
+
+  .ant-tooltip-inner {
+    border-radius: 8px;
+    padding: 5px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__content {
+    font-size: 12px;
+
+    > div {
+      display: flex;
+      justify-content: space-evenly;
+    }
+  }
+}

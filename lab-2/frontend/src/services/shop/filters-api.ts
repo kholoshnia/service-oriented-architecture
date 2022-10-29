@@ -3,7 +3,7 @@ import { Product, UnitOfMeasure } from 'models/product';
 import { Page, PaginationParams } from 'models/utils';
 import { shopClient } from 'utils/axios-clients';
 
-const shopApi = {
+const filtersApi = {
   getProductsByManufacturer: (
     manufacturerId: OrganizationId,
     paginationParams?: PaginationParams
@@ -21,4 +21,4 @@ const shopApi = {
     }),
 };
 
-export default shopApi;
+export default filtersApi;

@@ -22,7 +22,7 @@ const pathToKey: {
   '/storage': 2,
   '/groups': 3,
   '/part-number': 4,
-  '/delivery': 5,
+  '/transfer': 5,
 };
 
 const Header: FC = () => {
@@ -56,9 +56,9 @@ const Header: FC = () => {
     },
     {
       key: 5,
-      label: 'Delivery',
+      label: 'Transfer',
       icon: <CarOutlined />,
-      onClick: () => navigate('/delivery'),
+      onClick: () => navigate('/transfer'),
     },
   ];
 

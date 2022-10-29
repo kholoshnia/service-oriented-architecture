@@ -1,0 +1,39 @@
+.truck-with-boxes {
+  min-height: inherit;
+
+  &__text {
+    position: absolute;
+    bottom: 70%;
+    left: 50%;
+    color: #9d9d9d;
+    user-select: none;
+    transform: translate(-50%, -50%);
+  }
+
+  &__truck {
+    min-height: inherit;
+    flex-direction: column;
+    justify-content: end;
+    display: flex;
+    position: relative;
+    width: 100%;
+  }
+
+  &__truck-image {
+    width: 100%;
+    z-index: 1000;
+    transition: opacity .2s;
+
+    &:hover {
+      opacity: 0.5 !important;
+    }
+  }
+
+  &__boxes {
+    min-height: 89%;
+    width: 57%;
+    position: absolute;
+    bottom: 11%;
+    left: 5%;
+  }
+}

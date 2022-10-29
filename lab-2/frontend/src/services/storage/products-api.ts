@@ -2,13 +2,13 @@ import {
   ManufactureCostGroup,
   NewProduct,
   Product,
+  ProductFilters,
   ProductId,
 } from 'models/product';
 import { Page, PaginationParams } from 'models/utils';
 import { storageClient } from 'utils/axios-clients';
-import { ProductColumns } from 'utils/product-helpers';
 
-const storageApi = {
+const productsApi = {
   getProductById: (productId: ProductId) =>
     storageClient.get<Product>(`/products/${productId}`),
 
@@ -20,7 +20,7 @@ const storageApi = {
 
   getProducts: (
     paginationParams?: PaginationParams,
-    filterParams?: ProductColumns
+    filterParams?: ProductFilters
   ) =>
     storageClient.get<Page<Product>>('/products', {
       params: { ...paginationParams, ...filterParams },
@@ -47,4 +47,4 @@ const storageApi = {
     }),
 };
 
-export default storageApi;
+export default productsApi;

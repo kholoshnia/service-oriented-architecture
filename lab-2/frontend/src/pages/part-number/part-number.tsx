@@ -6,7 +6,7 @@ import { StringParam, useQueryParam } from 'use-query-params';
 
 import ProductTable from 'components/product-table';
 import usePaginatedQuery from 'hooks/use-paginated-query';
-import storageApi from 'services/storage-api';
+import productsApi from 'services/storage/products-api';
 
 const PartNumber: FC = () => {
   const [partNumber = '', setPartNumber] = useQueryParam(
@@ -21,11 +21,14 @@ const PartNumber: FC = () => {
     total,
     pagination,
     setPagination,
-  } = usePaginatedQuery(['part-number', partNumber], pagination =>
-    storageApi.getProductsWithGreaterPartNumber(
-      partNumber as string,
-      pagination
-    )
+  } = usePaginatedQuery(
+    'partNumber',
+    pagination =>
+      productsApi.getProductsWithGreaterPartNumber(
+        partNumber as string,
+        pagination
+      ),
+    { deps: [partNumber] }
   );
 
   return (

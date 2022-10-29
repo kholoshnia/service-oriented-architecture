@@ -1,6 +1,6 @@
 import { NumberParam, StringParam, useQueryParams } from 'use-query-params';
 
-import { ProductColumns } from 'utils/product-helpers';
+import { ProductFilters } from 'models/product';
 
 const useProductFilters = () => {
   const [filtersQuery, setFiltersQuest] = useQueryParams({
@@ -21,8 +21,8 @@ const useProductFilters = () => {
   });
 
   return {
-    filters: filtersQuery as ProductColumns,
-    setFilters: (filters?: ProductColumns) =>
+    filters: filtersQuery as ProductFilters,
+    setFilters: (filters?: ProductFilters) =>
       filters && setFiltersQuest(filters),
   };
 };

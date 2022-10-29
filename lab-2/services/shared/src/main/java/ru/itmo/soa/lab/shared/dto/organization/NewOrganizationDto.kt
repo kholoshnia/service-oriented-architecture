@@ -1,6 +1,7 @@
 package ru.itmo.soa.lab.shared.dto.organization
 
 import com.fasterxml.jackson.annotation.JsonRootName
+import ru.itmo.soa.lab.shared.dto.product.CoordinatesDto
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
 import javax.validation.constraints.NotNull
@@ -37,4 +38,7 @@ data class NewOrganizationDto(
      */
     @field:Min(1)
     val employeesCount: Long?,
+
+    @field:NotNull
+    val coordinates: CoordinatesDto,
 )

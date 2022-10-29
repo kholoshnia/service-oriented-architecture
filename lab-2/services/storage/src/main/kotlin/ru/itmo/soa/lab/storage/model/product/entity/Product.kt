@@ -4,16 +4,17 @@ import org.hibernate.annotations.Check
 import org.hibernate.annotations.CreationTimestamp
 import ru.itmo.soa.lab.shared.dto.product.UnitOfMeasure
 import ru.itmo.soa.lab.storage.model.organization.entity.Organization
+import ru.itmo.soa.lab.storage.model.transfer.entity.Transfer
 import java.time.LocalDate
 import javax.persistence.CascadeType
 import javax.persistence.Column
-import javax.persistence.Embedded
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.ManyToMany
 import javax.persistence.ManyToOne
 import javax.validation.constraints.Min
 import javax.validation.constraints.NotBlank
@@ -36,13 +37,6 @@ class Product(
     @field:NotBlank
     @field:Column(nullable = false)
     var name: String,
-
-    /**
-     * Поле не может быть null
-     */
-    @field:NotNull
-    @field:Embedded
-    var coordinates: Coordinates,
 
     /**
      * Поле не может быть null,
@@ -94,4 +88,7 @@ class Product(
     @CreationTimestamp
     @Column(nullable = false)
     var creationDate: LocalDate? = null
+
+    @ManyToMany(mappedBy = "products")
+    var transfers: List<Transfer> = listOf()
 }

@@ -6,7 +6,7 @@ import { Outlet } from 'react-router';
 import { QueryParamProvider } from 'use-query-params';
 import { ReactRouter6Adapter } from 'use-query-params/adapters/react-router-6';
 
-import Header from 'components/header';
+import Header from 'components/layout/header';
 
 const Layout: FC = () => (
   <AntdLayout className="layout">

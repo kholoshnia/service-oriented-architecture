@@ -10,9 +10,10 @@ import { BooleanParam, useQueryParam } from 'use-query-params';
 import NewProductModal from 'components/new-product-modal';
 import ProductInfoModal from 'components/product-info-modal';
 import ProductTable from 'components/product-table';
+import { ProductTableActions } from 'components/product-table/product-table';
 import usePaginatedQuery from 'hooks/use-paginated-query';
 import useProductFilters from 'hooks/use-product-filters';
-import storageApi from 'services/storage-api';
+import productsApi from 'services/storage/products-api';
 import { getErrorMessage } from 'utils/server-error';
 
 const Storage: FC = () => {
@@ -27,8 +28,10 @@ const Storage: FC = () => {
     total,
     pagination,
     setPagination,
-  } = usePaginatedQuery(['storage-products', filters], pagination =>
-    storageApi.getProducts(pagination, filters)
+  } = usePaginatedQuery(
+    'storage',
+    pagination => productsApi.getProducts(pagination, filters),
+    { deps: [filters] }
   );
 
   const [productModelOpen, setProductModelOpen] = useQueryParam(
@@ -47,7 +50,7 @@ const Storage: FC = () => {
     isLoading: maxProductLoading,
   } = useMutation(
     ['max-price'],
-    () => storageApi.getProductWithMaxPrice().then(r => r.data),
+    () => productsApi.getProductWithMaxPrice().then(r => r.data),
     {
       onSuccess: () => setMaxPriceModelOpen(true),
     }
@@ -92,7 +95,7 @@ const Storage: FC = () => {
         onPagination={setPagination}
         filters={filters}
         onFilters={setFilters}
-        actions={true}
+        actions={ProductTableActions.EDIT_DELETE}
         refetch={refetch}
       />
       <Divider />

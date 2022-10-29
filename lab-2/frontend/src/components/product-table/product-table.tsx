@@ -3,25 +3,32 @@ import { FC, useMemo } from 'react';
 import { Table } from 'antd';
 
 import useProductColumns from 'hooks/use-product-columns';
-import { Product } from 'models/product';
+import { Product, ProductFilters, ProductId } from 'models/product';
 import { PaginationParams } from 'models/utils';
 import { getFilterParams } from 'utils/filter-helpers';
 import setIdKeys from 'utils/id-keys';
-import { ProductColumns, productsToColumns } from 'utils/product-helpers';
+import { productsToColumns } from 'utils/product-helpers';
 import { getSortParams } from 'utils/sort-helpers';
+
+export enum ProductTableActions {
+  EDIT_DELETE,
+  SELECT,
+}
 
 type ProductTableProps = {
   products?: Product[];
   loading?: boolean;
   total: number;
-  pagination: PaginationParams;
-  onPagination: (pagination: PaginationParams) => void;
-  filters?: ProductColumns;
-  onFilters?: (filters?: ProductColumns) => void;
-  actions?: boolean;
+  pagination?: PaginationParams;
+  onPagination?: (pagination: PaginationParams) => void;
+  filters?: ProductFilters;
+  onFilters?: (filters?: ProductFilters) => void;
+  organizationFilter?: boolean;
+  actions?: ProductTableActions;
   refetch?: () => void;
-  editable?: boolean;
   fixName?: boolean;
+  onSelect?: (productsId: ProductId, checked: boolean) => void;
+  selected?: Set<ProductId>;
 };
 
 const ProductTable: FC<ProductTableProps> = ({
@@ -32,17 +39,23 @@ const ProductTable: FC<ProductTableProps> = ({
   onPagination,
   filters,
   onFilters,
+  organizationFilter,
   actions,
   refetch,
   fixName,
+  onSelect,
+  selected,
 }) => {
   const columns = useProductColumns({
     pagination,
     filters,
     onFilters,
+    organizationFilter,
     actions,
     refetch,
     fixName,
+    onSelect,
+    selected,
   });
 
   const dataSource = useMemo(
@@ -53,7 +66,7 @@ const ProductTable: FC<ProductTableProps> = ({
   const onFiltersChange = filters => onFilters?.(getFilterParams(filters));
 
   const onSortChange = sort =>
-    onPagination({ ...pagination, sort: getSortParams(sort) });
+    onPagination?.({ ...pagination, sort: getSortParams(sort) });
 
   return (
     <Table
@@ -65,13 +78,13 @@ const ProductTable: FC<ProductTableProps> = ({
       loading={loading}
       pagination={{
         total,
-        current: pagination.page ?? 1,
-        pageSize: pagination.size ?? 5,
+        current: pagination?.page ?? 1,
+        pageSize: pagination?.size ?? 5,
         showSizeChanger: true,
         pageSizeOptions: [5, 10, 20],
         defaultPageSize: 5,
         size: 'default',
-        onChange: (page, size) => onPagination({ ...pagination, page, size }),
+        onChange: (page, size) => onPagination?.({ ...pagination, page, size }),
       }}
       onChange={(pagination, filters, sort) => {
         onFiltersChange(filters);

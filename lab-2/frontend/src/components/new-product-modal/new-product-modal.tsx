@@ -14,7 +14,8 @@ import { AxiosError } from 'axios';
 
 import { unitsOfMeasure } from 'components/unit-of-measure-filter/unit-of-measure-filter';
 import { NewProduct } from 'models/product';
-import storageApi from 'services/storage-api';
+import productsApi from 'services/storage/products-api';
+import clearValues from 'utils/clear-values';
 import { ProductColumns } from 'utils/product-helpers';
 import { showError } from 'utils/server-error';
 
@@ -42,8 +43,8 @@ const NewProductModal: FC<NewProductModalProps> = ({
     ['new-product', update],
     (newProduct: NewProduct) =>
       update
-        ? storageApi.updateProduct(productColumns!.id, newProduct)
-        : storageApi.addProduct(newProduct),
+        ? productsApi.updateProduct(productColumns!.id, newProduct)
+        : productsApi.addProduct(newProduct),
     {
       onError: (e: AxiosError) =>
         showError(e, update ? 'Cannot update product!' : 'Cannot add product!'),
@@ -60,19 +61,16 @@ const NewProductModal: FC<NewProductModalProps> = ({
               }
         );
         form.resetFields();
-        setIncludeManufacturer(false);
+        if (!update) setIncludeManufacturer(false);
         onSuccess();
       },
     }
   );
 
-  const onFinish = (values: ProductColumns) =>
+  const onFinish = (values: ProductColumns) => {
+    clearValues(values);
     updateProduct({
       name: values.name,
-      coordinates: {
-        x: values.coordinatesX,
-        y: values.coordinatesY,
-      },
       price: values.price,
       partNumber: values.partNumber,
       manufactureCost: values.manufactureCost,
@@ -83,9 +81,14 @@ const NewProductModal: FC<NewProductModalProps> = ({
             fullName: values.manufacturerFullName,
             annualTurnover: values.manufacturerAnnualTurnover,
             employeesCount: values.manufacturerEmployeesCount,
+            coordinates: {
+              x: values.manufacturerCoordinatesX ?? 0,
+              y: values.manufacturerCoordinatesY ?? 0,
+            },
           }
         : undefined,
     });
+  };
 
   const onUnitOfMeasureChange = (value: string) => {
     form.setFieldsValue({ unitOfMeasure: value });
@@ -98,7 +101,7 @@ const NewProductModal: FC<NewProductModalProps> = ({
       onOk={() => form.submit()}
       onCancel={() => {
         form.resetFields();
-        setIncludeManufacturer(false);
+        if (!update) setIncludeManufacturer(false);
         onCancel();
       }}
       okButtonProps={{
@@ -123,28 +126,6 @@ const NewProductModal: FC<NewProductModalProps> = ({
           ]}
         >
           <Input />
-        </Form.Item>
-        <Form.Item
-          label="X coordinate"
-          name="coordinatesX"
-          rules={[{ required: true, message: 'X coordinate is required!' }]}
-        >
-          <InputNumber
-            style={{ width: '100%' }}
-            max={492}
-            parser={value => Math.trunc(Number(value))}
-          />
-        </Form.Item>
-        <Form.Item
-          label="Y coordinate"
-          name="coordinatesY"
-          rules={[{ required: true, message: 'X coordinate is required!' }]}
-        >
-          <InputNumber
-            style={{ width: '100%' }}
-            min={-139}
-            parser={value => Math.trunc(Number(value))}
-          />
         </Form.Item>
         <Form.Item
           label="Price"
@@ -242,6 +223,30 @@ const NewProductModal: FC<NewProductModalProps> = ({
               <InputNumber
                 style={{ width: '100%' }}
                 min={1}
+                parser={value => Math.trunc(Number(value))}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="X coordinate"
+              name="manufacturerCoordinatesX"
+              rules={[{ required: true, message: 'X coordinate is required!' }]}
+            >
+              <InputNumber
+                style={{ width: '100%' }}
+                max={492}
+                parser={value => Math.trunc(Number(value))}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Y coordinate"
+              name="manufacturerCoordinatesY"
+              rules={[{ required: true, message: 'X coordinate is required!' }]}
+            >
+              <InputNumber
+                style={{ width: '100%' }}
+                min={-139}
                 parser={value => Math.trunc(Number(value))}
               />
             </Form.Item>

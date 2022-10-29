@@ -1,5 +1,6 @@
 import { NewOrganization, Organization } from 'models/organization';
 import { DateString } from 'models/utils';
+import { ProductColumns } from 'utils/product-helpers';
 
 export enum UnitOfMeasure {
   KILOGRAMS = 'KILOGRAMS',
@@ -9,18 +10,12 @@ export enum UnitOfMeasure {
   MILLIGRAMS = 'MILLIGRAMS',
 }
 
-export type Coordinates = {
-  x: number;
-  y: number;
-};
-
 export type ProductId = number;
 
 export type Product = {
   id: ProductId;
   creationDate: DateString;
   name: string;
-  coordinates: Coordinates;
   price: number;
   partNumber: string;
   manufactureCost: number;
@@ -30,7 +25,6 @@ export type Product = {
 
 export type NewProduct = {
   name: string;
-  coordinates: Coordinates;
   price: number;
   partNumber: string;
   manufactureCost: number;
@@ -41,4 +35,8 @@ export type NewProduct = {
 export type ManufactureCostGroup = {
   manufactureCost: number;
   count: number;
+};
+
+export type ProductFilters = Partial<ProductColumns> & {
+  transferred?: boolean;
 };

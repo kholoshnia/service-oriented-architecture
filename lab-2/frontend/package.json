@@ -26,6 +26,7 @@
     "classnames": "2.3.2",
     "fast-xml-parser": "4.0.11",
     "formik": "^2.2.9",
+    "matter-js": "^0.18.0",
     "moment": "^2.29.4",
     "qs": "6.11.0",
     "react": "18.2.0",
@@ -39,6 +40,7 @@
     "yup": "^0.32.11"
   },
   "devDependencies": {
+    "@types/matter-js": "^0.18.2",
     "concurrently": "7.4.0",
     "eslint": "8.25.0",
     "eslint-config-prettier": "8.5.0",

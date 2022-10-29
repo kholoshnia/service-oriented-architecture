@@ -9,7 +9,7 @@ import ProductTable from 'components/product-table';
 import UnitOfMeasureFilter from 'components/unit-of-measure-filter/unit-of-measure-filter';
 import usePaginatedQuery from 'hooks/use-paginated-query';
 import { Product, UnitOfMeasure } from 'models/product';
-import shopApi from 'services/shop-api';
+import filtersApi from 'services/shop/filters-api';
 import getEmptyPage from 'utils/empty-page';
 
 type ShopFilter = 'MANUFACTURER' | 'UNIT_OF_MEASURE';
@@ -42,12 +42,12 @@ const Shop: FC = () => {
     total,
     pagination,
     setPagination,
-  } = usePaginatedQuery(['shop-products'], pagination => {
+  } = usePaginatedQuery('shop', pagination => {
     if (selectedFilter === 'MANUFACTURER' && manufacturerId) {
-      return shopApi.getProductsByManufacturer(manufacturerId, pagination);
+      return filtersApi.getProductsByManufacturer(manufacturerId, pagination);
     }
     if (selectedFilter === 'UNIT_OF_MEASURE') {
-      return shopApi.getProductsByUnitOfMeasure(
+      return filtersApi.getProductsByUnitOfMeasure(
         unitOfMeasure as UnitOfMeasure,
         pagination
       );

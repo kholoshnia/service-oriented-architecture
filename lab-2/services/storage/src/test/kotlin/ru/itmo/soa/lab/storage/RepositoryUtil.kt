@@ -14,7 +14,7 @@ class RepositoryUtil(
 
     fun saveProduct(uniqueName: String, price: Int = 1): Product {
         val product = EntityUtil.createProduct(uniqueName, false, price)
-        product.manufacturer = product.manufacturer?.let { organizationRepository.save(it) }
+        product.manufacturer = product.manufacturer?.let(organizationRepository::save)
         return productRepository.saveAndFlush(product)
     }
 }

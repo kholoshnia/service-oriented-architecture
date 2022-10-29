@@ -16,9 +16,9 @@ class PageConverterTest {
         val page = EntityUtil.createPage()
         val pageDto = pageConverter.toDto(page)
 
-        assertThat(pageDto.page).isEqualTo(page.number)
+        assertThat(pageDto.page).isEqualTo(page.number + 1)
         assertThat(pageDto.size).isEqualTo(page.size)
-        assertThat(pageDto.total).isEqualTo(page.totalPages)
+        assertThat(pageDto.total).isEqualTo(page.totalElements)
         assertThat(pageDto.data).containsAll(page.content)
     }
 }

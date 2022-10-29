@@ -1,38 +1,46 @@
 import { FC, useRef } from 'react';
 
 import { FilterFilled } from '@ant-design/icons';
-import { Tooltip } from 'antd';
+import { Checkbox, Tooltip } from 'antd';
 import { ColumnsType, ColumnType } from 'antd/es/table';
 
 import FilterDropdown, {
-  NumberFilter,
-  InputFilter,
-  UnitOfMeasureFilter,
   CreationDateFilter,
+  InputFilter,
+  NumberFilter,
+  UnitOfMeasureFilter,
 } from 'components/filter-dropdown';
 import { FilterProps } from 'components/filter-dropdown/filter-dropdown';
 import ProductActions from 'components/product-actions';
+import { ProductTableActions } from 'components/product-table/product-table';
+import { ProductFilters, ProductId } from 'models/product';
 import { PaginationParams } from 'models/utils';
 import { formatDate, getDateOnly, ProductColumns } from 'utils/product-helpers';
 import { setSortParams } from 'utils/sort-helpers';
 import { shortenString } from 'utils/string-helpers';
 
 type UseProductColumns = {
-  pagination: PaginationParams;
-  filters?: ProductColumns;
-  onFilters?: (filters?: ProductColumns) => void;
-  actions?: boolean;
+  pagination?: PaginationParams;
+  filters?: ProductFilters;
+  onFilters?: (filters?: ProductFilters) => void;
+  organizationFilter?: boolean;
+  actions?: ProductTableActions;
   refetch?: () => void;
   fixName?: boolean;
+  onSelect?: (productsId: ProductId, checked: boolean) => void;
+  selected?: Set<ProductId>;
 };
 
 const useProductColumns = ({
   pagination,
   filters,
   onFilters,
+  organizationFilter = true,
   actions,
   refetch,
   fixName,
+  onSelect,
+  selected,
 }: UseProductColumns): ColumnsType<ProductColumns> => {
   const searchInput = useRef<any>(null);
 
@@ -93,25 +101,6 @@ const useProductColumns = ({
       ...getFilterProps('creationDate', CreationDateFilter),
     },
     {
-      title: 'Coordinates',
-      children: [
-        {
-          title: 'X',
-          dataIndex: 'coordinatesX',
-          key: 'coordinates.x',
-          sorter: { multiple: 1 },
-          ...getFilterProps('coordinatesX', NumberFilter),
-        },
-        {
-          title: 'Y',
-          dataIndex: 'coordinatesY',
-          key: 'coordinates.y',
-          sorter: { multiple: 1 },
-          ...getFilterProps('coordinatesY', NumberFilter),
-        },
-      ],
-    },
-    {
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
@@ -151,7 +140,8 @@ const useProductColumns = ({
           dataIndex: 'manufacturerId',
           key: 'manufacturer.id',
           sorter: { multiple: 1 },
-          ...getFilterProps('manufacturerId', NumberFilter),
+          ...(organizationFilter &&
+            getFilterProps('manufacturerId', NumberFilter)),
         },
         {
           title: 'Name',
@@ -181,11 +171,30 @@ const useProductColumns = ({
           sorter: { multiple: 1 },
           ...getFilterProps('manufacturerEmployeesCount', NumberFilter),
         },
+        {
+          title: 'Coordinates',
+          children: [
+            {
+              title: 'X',
+              dataIndex: 'manufacturerCoordinatesX',
+              key: 'manufacturer.coordinates.x',
+              sorter: { multiple: 1 },
+              ...getFilterProps('manufacturerCoordinatesX', NumberFilter),
+            },
+            {
+              title: 'Y',
+              dataIndex: 'manufacturerCoordinatesY',
+              key: 'manufacturer.coordinates.y',
+              sorter: { multiple: 1 },
+              ...getFilterProps('manufacturerCoordinatesY', NumberFilter),
+            },
+          ],
+        },
       ],
     },
   ];
 
-  if (actions) {
+  if (actions === ProductTableActions.EDIT_DELETE) {
     productColumns.push({
       title: 'Actions',
       key: 'actions',
@@ -194,9 +203,21 @@ const useProductColumns = ({
         <ProductActions productColumns={productColumns} refetch={refetch} />
       ),
     });
+  } else if (actions === ProductTableActions.SELECT) {
+    productColumns.push({
+      title: 'Actions',
+      key: 'actions',
+      fixed: 'right',
+      render: (_, productColumns) => (
+        <Checkbox
+          checked={selected?.has(productColumns.id)}
+          onChange={e => onSelect?.(productColumns.id, e.target.checked)}
+        />
+      ),
+    });
   }
 
-  return setSortParams(productColumns, pagination.sort);
+  return setSortParams(productColumns, pagination?.sort);
 };
 
 export default useProductColumns;

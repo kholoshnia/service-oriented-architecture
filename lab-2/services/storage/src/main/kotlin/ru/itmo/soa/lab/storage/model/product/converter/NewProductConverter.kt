@@ -8,16 +8,14 @@ import ru.itmo.soa.lab.storage.utils.DtoConverter
 
 @Component
 class NewProductConverter(
-    private val coordinatesConverter: CoordinatesConverter,
     private val newOrganizationConverter: NewOrganizationConverter,
 ) : DtoConverter<Product, NewProductDto> {
     override fun toEntity(dto: NewProductDto) = Product(
         dto.name,
-        coordinatesConverter.toEntity(dto.coordinates),
         dto.price,
         dto.partNumber,
         dto.manufactureCost,
         dto.unitOfMeasure,
-        dto.manufacturer?.let { newOrganizationConverter.toEntity(it) },
+        dto.manufacturer?.let(newOrganizationConverter::toEntity),
     )
 }

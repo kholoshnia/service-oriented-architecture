@@ -1,7 +1,9 @@
 package ru.itmo.soa.lab.storage.model.organization.entity
 
 import org.hibernate.annotations.Check
+import ru.itmo.soa.lab.storage.model.product.entity.Coordinates
 import javax.persistence.Column
+import javax.persistence.Embedded
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -52,6 +54,10 @@ class Organization(
      */
     @field:Min(1)
     var employeesCount: Long?,
+
+    @field:NotNull
+    @field:Embedded
+    var coordinates: Coordinates,
 ) {
     /**
      * Поле не может быть null,

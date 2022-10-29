@@ -42,14 +42,6 @@ const ProductInfoModal: FC<ProductInfoModalProps> = ({
           <span>{product.name}</span>
         </div>
         <div>
-          <strong>X coordinate:</strong>
-          <span>{product.coordinates.x}</span>
-        </div>
-        <div>
-          <strong>Y coordinate:</strong>
-          <span>{product.coordinates.y}</span>
-        </div>
-        <div>
           <strong>Price:</strong>
           <span>{product.price}</span>
         </div>
@@ -94,6 +86,14 @@ const ProductInfoModal: FC<ProductInfoModalProps> = ({
             <div>
               <strong>Employees count:</strong>{' '}
               {product.manufacturer.employeesCount}
+            </div>
+            <div>
+              <strong>X coordinate:</strong>
+              <span>{product.manufacturer.coordinates.x}</span>
+            </div>
+            <div>
+              <strong>Y coordinate:</strong>
+              <span>{product.manufacturer.coordinates.y}</span>
             </div>
           </>
         ) : (

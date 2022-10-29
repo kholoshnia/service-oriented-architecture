@@ -6,8 +6,6 @@ export type ProductColumns = {
   id: ProductId;
   creationDate: DateString;
   name: string;
-  coordinatesX: number;
-  coordinatesY: number;
   price: number;
   partNumber: string;
   manufactureCost: number;
@@ -17,6 +15,8 @@ export type ProductColumns = {
   manufacturerFullName?: string;
   manufacturerAnnualTurnover?: number;
   manufacturerEmployeesCount?: number;
+  manufacturerCoordinatesX?: number;
+  manufacturerCoordinatesY?: number;
 };
 
 export const productsToColumns = (products: Product[]): ProductColumns[] =>
@@ -25,8 +25,6 @@ export const productsToColumns = (products: Product[]): ProductColumns[] =>
       id: product.id,
       creationDate: product.creationDate,
       name: product.name,
-      coordinatesX: product.coordinates.x,
-      coordinatesY: product.coordinates.y,
       price: product.price,
       partNumber: product.partNumber,
       manufactureCost: product.manufactureCost,
@@ -41,6 +39,10 @@ export const productsToColumns = (products: Product[]): ProductColumns[] =>
         product.manufacturer.annualTurnover;
       productColumns.manufacturerEmployeesCount =
         product.manufacturer.employeesCount;
+      productColumns.manufacturerCoordinatesX =
+        product.manufacturer.coordinates.x;
+      productColumns.manufacturerCoordinatesY =
+        product.manufacturer.coordinates.y;
     }
 
     return productColumns;

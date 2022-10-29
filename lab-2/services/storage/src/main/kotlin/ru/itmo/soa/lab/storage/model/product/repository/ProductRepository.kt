@@ -11,13 +11,12 @@ import ru.itmo.soa.lab.storage.utils.ProductFilters
 
 interface ProductRepository : JpaRepository<Product, ProductId> {
     @Query(
-        "select p from Product as p " +
-                "left join p.manufacturer pm where " +
+        "select distinct p from Product as p " +
+                "left join p.manufacturer pm " +
+                "left join p.transfers pt where " +
                 "(:#{#productFilters.id} is null or p.id = :#{#productFilters.id}) and " +
                 "(:#{#productFilters.creationDate} is null or cast(p.creationDate as string) = :#{#productFilters.creationDate}) and " +
                 "(:#{#productFilters.name} is null or p.name = :#{#productFilters.name}) and " +
-                "(:#{#productFilters.coordinatesX} is null or p.coordinates.x = :#{#productFilters.coordinatesX}) and " +
-                "(:#{#productFilters.coordinatesY} is null or p.coordinates.y = :#{#productFilters.coordinatesY}) and " +
                 "(:#{#productFilters.price} is null or p.price = :#{#productFilters.price}) and " +
                 "(:#{#productFilters.partNumber} is null or p.partNumber = :#{#productFilters.partNumber}) and " +
                 "(:#{#productFilters.manufactureCost} is null or p.manufactureCost = :#{#productFilters.manufactureCost}) and " +
@@ -26,7 +25,8 @@ interface ProductRepository : JpaRepository<Product, ProductId> {
                 "(:#{#productFilters.manufacturerName} is null or pm.name = :#{#productFilters.manufacturerName}) and " +
                 "(:#{#productFilters.manufacturerFullName} is null or pm.fullName = :#{#productFilters.manufacturerFullName}) and " +
                 "(:#{#productFilters.manufacturerAnnualTurnover} is null or pm.annualTurnover = :#{#productFilters.manufacturerAnnualTurnover}) and " +
-                "(:#{#productFilters.manufacturerEmployeesCount} is null or pm.employeesCount = :#{#productFilters.manufacturerEmployeesCount})"
+                "(:#{#productFilters.manufacturerEmployeesCount} is null or pm.employeesCount = :#{#productFilters.manufacturerEmployeesCount}) and " +
+                "(:#{#productFilters.transferred} is null or (:#{#productFilters.transferred} = true and pt.finishedAt is null or pt.finishedAt is not null))"
     )
     fun findProductsPage(productFilters: ProductFilters, pageable: Pageable): Page<Product>
 

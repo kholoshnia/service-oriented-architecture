@@ -8,8 +8,6 @@ data class ProductFilters(
     val id: ProductId? = null,
     val creationDate: String? = null,
     val name: String? = null,
-    val coordinatesX: Int? = null,
-    val coordinatesY: Int? = null,
     val price: Int? = null,
     val partNumber: String? = null,
     val manufactureCost: Float? = null,
@@ -19,4 +17,7 @@ data class ProductFilters(
     val manufacturerFullName: String? = null,
     val manufacturerAnnualTurnover: Int? = null,
     val manufacturerEmployeesCount: Long? = null,
+    val manufacturerCoordinatesX: Int? = null,
+    val manufacturerCoordinatesY: Int? = null,
+    val transferred: Boolean? = null
 )

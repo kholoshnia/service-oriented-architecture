@@ -18,12 +18,6 @@ data class NewProductDto(
     val name: String,
 
     /**
-     * Поле не может быть null
-     */
-    @field:NotNull
-    val coordinates: CoordinatesDto,
-
-    /**
      * Поле не может быть null,
      * Значение поля должно быть больше 0
      */

@@ -2838,6 +2838,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/matter-js@npm:^0.18.2":
+  version: 0.18.2
+  resolution: "@types/matter-js@npm:0.18.2"
+  checksum: 8997d889e2c4fe10eda084e93d5dbd264b3888ea0c33c767d26e2cbb515a5c96717fc16b933a6067583eb5e59c0292187ea229fb2f6eaa2d9a749ec8327496c7
+  languageName: node
+  linkType: hard
+
 "@types/mime@npm:*":
   version: 3.0.1
   resolution: "@types/mime@npm:3.0.1"
@@ -9162,6 +9169,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"matter-js@npm:^0.18.0":
+  version: 0.18.0
+  resolution: "matter-js@npm:0.18.0"
+  checksum: c7f630348148c26064ad2147f2d68ce4d58095cec9a89069bf6db271a97922ccebd13809193eeffa60e73929a2216364a21265ecdc265f87c782179fcb836d21
+  languageName: node
+  linkType: hard
+
 "mdn-data@npm:2.0.14":
   version: 2.0.14
   resolution: "mdn-data@npm:2.0.14"
@@ -9838,6 +9852,7 @@ __metadata:
     "@testing-library/react": 13.0.0
     "@testing-library/user-event": 13.2.1
     "@types/jest": 27.0.1
+    "@types/matter-js": ^0.18.2
     "@types/node": 16.7.13
     "@types/react": 18.0.0
     "@types/react-dom": 18.0.0
@@ -9860,6 +9875,7 @@ __metadata:
     eslint-plugin-unused-imports: 2.0.0
     fast-xml-parser: 4.0.11
     formik: ^2.2.9
+    matter-js: ^0.18.0
     moment: ^2.29.4
     prettier: 2.7.1
     qs: 6.11.0
