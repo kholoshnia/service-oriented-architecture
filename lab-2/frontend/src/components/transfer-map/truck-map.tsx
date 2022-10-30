@@ -23,7 +23,7 @@ type TruckMapProps = {
   transfers: Normalized<Transfer>[];
   mapRef: any;
   controlledTruck?: Normalized<Transfer>;
-  setControlledTruck: (transfer: Normalized<Transfer>) => void;
+  setControlledTruck: (transfer?: Normalized<Transfer>) => void;
 };
 
 const TruckMap: FC<TruckMapProps> = ({
@@ -45,6 +45,7 @@ const TruckMap: FC<TruckMapProps> = ({
     (coordinates: Coordinates) =>
       transferApi.updateCoordinates(controlledTruck!.id, coordinates),
     {
+      retry: false,
       onError: (e: AxiosError) => showError(e, 'Could not update coordinates!'),
     }
   );
@@ -108,11 +109,15 @@ const TruckMap: FC<TruckMapProps> = ({
       setNewCoordinates(target);
     };
 
+    const onBlur = () => setControlledTruck(undefined);
+
     document.addEventListener('keydown', onKeyDown);
     document.addEventListener('keyup', onKeyUp);
+    window.addEventListener('blur', onBlur);
     return () => {
       document.removeEventListener('keydown', onKeyDown);
       document.removeEventListener('keyup', onKeyUp);
+      window.removeEventListener('blur', onBlur);
     };
   }, [controlledTruck]);
 

@@ -13,8 +13,6 @@
     height: 100%;
     width: 100%;
     position: relative;
-    min-width: 500px;
-    min-height: 500px;
   }
 
   &__organization {
@@ -36,7 +34,7 @@
   &__truck {
     cursor: pointer;
     position: absolute;
-    transform: translate(-50%, -50%) rotate(180deg);
+    transform: translate(-50%, -50%);
     transition: all .3s ease-out;
 
     &:focus {

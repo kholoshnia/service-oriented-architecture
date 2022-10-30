@@ -27,8 +27,10 @@ const Transfer: FC = () => {
   } = usePaginatedQuery(
     'transfers',
     pagination => transferApi.getTransfers(pagination, false),
-    { pagination: { size: 50 } }
-    // { refetchInterval: 1000 } // todo enable add filters and description
+    {
+      pagination: { size: 50 },
+      refetchInterval: 1000,
+    }
   );
 
   return (

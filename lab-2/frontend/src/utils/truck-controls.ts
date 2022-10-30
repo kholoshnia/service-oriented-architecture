@@ -30,18 +30,22 @@ const onKeyPressed = (
   switch (event.key) {
     case 'ArrowRight':
     case 'd':
+      event.preventDefault();
       directions.right = pressed;
       break;
     case 'ArrowLeft':
     case 'a':
+      event.preventDefault();
       directions.left = pressed;
       break;
     case 'ArrowUp':
     case 'w':
+      event.preventDefault();
       directions.up = pressed;
       break;
     case 'ArrowDown':
     case 's':
+      event.preventDefault();
       directions.down = pressed;
       break;
     default:
