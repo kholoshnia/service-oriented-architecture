@@ -1,6 +1,6 @@
 .transfer-map {
   background-color: white;
-  height: 75vh;
+  height: 73vh;
   width: 100%;
   border-radius: 8px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
@@ -24,32 +24,72 @@
     filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.1));
   }
 
+  &__organization-name {
+    text-align: center;
+    font-weight: bold;
+    font-size: 12px;
+    margin-top: 0.3rem;
+    border-radius: 8px;
+    background: white;
+  }
+
   &__truck {
     cursor: pointer;
     position: absolute;
     transform: translate(-50%, -50%) rotate(180deg);
     transition: all .3s ease-out;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   &__truck-image {
     opacity: 0.7;
     filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.1));
+
+    &--controlled {
+      opacity: 1;
+      animation: lights;
+      animation-fill-mode: forwards;
+      animation-duration: 2s;
+      animation-timing-function: ease-out;
+    }
   }
 
-  &__controlled-truck {
-    opacity: 1;
-    //$color: #2fc737;
-    //filter: drop-shadow(2px 2px 0 $color)
-    //        drop-shadow(-2px 2px 0 $color)
-    //        drop-shadow(2px -2px 0 $color)
-    //        drop-shadow(-2px -2px 0 $color);
-  }
+  @keyframes lights {
+    $rear: #de2e2e;
+    $front: #fff200;
 
-  &__organization-name {
-    text-align: center;
-    font-weight: bold;
-    font-size: 12px;
-    margin-top: 0.2rem;
+    0% {
+      filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
+    }
+
+    5% {
+      filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1))
+      drop-shadow(0 5px 3px $rear)
+      drop-shadow(0 -5px 3px $front);
+    }
+
+    10% {
+      filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
+    }
+
+    15% {
+      filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1))
+      drop-shadow(0 5px 3px $rear)
+      drop-shadow(0 -5px 3px $front);
+    }
+
+    20% {
+      filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
+    }
+
+    100% {
+      filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1))
+              drop-shadow(0 5px 3px $rear)
+              drop-shadow(0 -5px 3px $front);
+    }
   }
 }
 

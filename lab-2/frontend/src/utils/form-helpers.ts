@@ -1,4 +1,4 @@
-const clearValues = obj => {
+export const clearValues = obj => {
   Object.keys(obj).forEach(key => {
     if (typeof obj[key] === 'object') {
       clearValues(obj);
@@ -10,5 +10,3 @@ const clearValues = obj => {
     }
   });
 };
-
-export default clearValues;

@@ -18,6 +18,8 @@ const useProductFilters = () => {
     manufacturerFullName: StringParam,
     manufacturerAnnualTurnover: NumberParam,
     manufacturerEmployeesCount: NumberParam,
+    manufacturerCoordinatesX: NumberParam,
+    manufacturerCoordinatesY: NumberParam,
   });
 
   return {

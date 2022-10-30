@@ -29,6 +29,7 @@ type ProductTableProps = {
   fixName?: boolean;
   onSelect?: (productsId: ProductId, checked: boolean) => void;
   selected?: Set<ProductId>;
+  sortable?: boolean;
 };
 
 const ProductTable: FC<ProductTableProps> = ({
@@ -45,6 +46,7 @@ const ProductTable: FC<ProductTableProps> = ({
   fixName,
   onSelect,
   selected,
+  sortable = true,
 }) => {
   const columns = useProductColumns({
     pagination,
@@ -56,6 +58,7 @@ const ProductTable: FC<ProductTableProps> = ({
     fixName,
     onSelect,
     selected,
+    sortable,
   });
 
   const dataSource = useMemo(

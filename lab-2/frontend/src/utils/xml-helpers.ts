@@ -1,15 +1,15 @@
 import { XMLBuilder, XMLParser } from 'fast-xml-parser';
 
-const transformArrays = data => {
+const deepArraysUnwrap = data => {
   Object.keys(data).forEach(key => {
     if (typeof data[key] === 'object') {
       if (data[key] && data[key][key]) {
         data[key] = Array.isArray(data[key][key])
           ? data[key][key]
           : [data[key][key]];
-        data[key].map(transformArrays);
+        data[key].map(deepArraysUnwrap);
       } else {
-        transformArrays(data[key]);
+        deepArraysUnwrap(data[key]);
       }
     }
   });
@@ -25,26 +25,25 @@ export const parseXml = (xml?: string | Buffer) => {
 
   if (result.data === '') {
     result.data = [];
-  } else if (result.data && result.data.data) {
-    result.data = Array.isArray(result.data.data)
-      ? result.data.data
-      : [result.data.data];
   }
 
-  transformArrays(result);
+  deepArraysUnwrap(result);
   return result;
+};
+
+const deepArraysWrap = data => {
+  Object.keys(data).forEach(key => {
+    if (Array.isArray(data[key])) {
+      data[key] = { [key]: data[key] };
+    }
+  });
 };
 
 const xmlBuilder = new XMLBuilder({});
 
-export const toXml = (obj: any) => {
-  if (!obj) return undefined;
+export const toXml = (data: any) => {
+  if (!data) return undefined;
 
-  Object.keys(obj).forEach(key => {
-    if (Array.isArray(obj[key])) {
-      obj[key] = { [key]: obj[key] };
-    }
-  });
-
-  return `<new>${xmlBuilder.build(obj)}</new>`;
+  deepArraysWrap(data);
+  return `<new>${xmlBuilder.build(data)}</new>`;
 };

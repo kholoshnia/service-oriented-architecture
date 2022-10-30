@@ -36,4 +36,45 @@
     bottom: 11%;
     left: 5%;
   }
+
+  &--gone {
+    animation: gone;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    display: flex;
+    align-items: center;
+
+    &:before {
+      content: '';
+      width: 5rem;
+      height: 2px;
+      background-color: gray;
+      position: absolute;
+      left: -120px;
+      top: 220px
+    }
+
+    &:after {
+      content: '';
+      width: 7rem;
+      height: 2px;
+      top: 265px;
+      background-color: gray !important;
+      position: absolute;
+      left: -165px;
+    }
+  }
+
+  @keyframes gone {
+    0% {
+    }
+
+    20% {
+      transform: translateX(-70px) skew(5deg);
+    }
+
+    100% {
+      transform: translateX(1000px);
+    }
+  }
 }

@@ -17,10 +17,10 @@ const useQueryPagination = (
   });
 
   const pagination = {
+    ...defaultPagination,
     page: paginationQuery[pageParam],
     size: paginationQuery[sizeParam],
     sort: paginationQuery[sortParam],
-    ...defaultPagination,
   } as PaginationParams;
 
   const setPagination = (pagination: PaginationParams) => {

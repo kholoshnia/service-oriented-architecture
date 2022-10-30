@@ -38,5 +38,5 @@ export type ManufactureCostGroup = {
 };
 
 export type ProductFilters = Partial<ProductColumns> & {
-  transferred?: boolean;
+  canBeTransferred?: boolean;
 };

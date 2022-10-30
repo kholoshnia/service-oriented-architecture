@@ -6,8 +6,9 @@ import { ColumnsType, ColumnType } from 'antd/es/table';
 
 import FilterDropdown, {
   CreationDateFilter,
+  FloatFilter,
   InputFilter,
-  NumberFilter,
+  IntegerFilter,
   UnitOfMeasureFilter,
 } from 'components/filter-dropdown';
 import { FilterProps } from 'components/filter-dropdown/filter-dropdown';
@@ -29,6 +30,7 @@ type UseProductColumns = {
   fixName?: boolean;
   onSelect?: (productsId: ProductId, checked: boolean) => void;
   selected?: Set<ProductId>;
+  sortable?: boolean;
 };
 
 const useProductColumns = ({
@@ -41,6 +43,7 @@ const useProductColumns = ({
   fixName,
   onSelect,
   selected,
+  sortable,
 }: UseProductColumns): ColumnsType<ProductColumns> => {
   const searchInput = useRef<any>(null);
 
@@ -76,15 +79,15 @@ const useProductColumns = ({
       title: 'ID',
       dataIndex: 'id',
       key: 'id',
-      sorter: { multiple: 1 },
+      sorter: sortable ? { multiple: 1 } : undefined,
       fixed: 'left',
-      ...getFilterProps('id', NumberFilter),
+      ...getFilterProps('id', IntegerFilter),
     },
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
-      sorter: { multiple: 1 },
+      sorter: sortable ? { multiple: 1 } : undefined,
       fixed: fixName ? 'left' : undefined,
       ...getFilterProps('name', InputFilter),
     },
@@ -92,7 +95,7 @@ const useProductColumns = ({
       title: 'Created',
       dataIndex: 'creationDate',
       key: 'creationDate',
-      sorter: { multiple: 1 },
+      sorter: sortable ? { multiple: 1 } : undefined,
       render: creationDate => (
         <Tooltip title={formatDate(creationDate)}>
           {getDateOnly(creationDate)}
@@ -104,14 +107,14 @@ const useProductColumns = ({
       title: 'Price',
       dataIndex: 'price',
       key: 'price',
-      sorter: { multiple: 1 },
-      ...getFilterProps('price', NumberFilter),
+      sorter: sortable ? { multiple: 1 } : undefined,
+      ...getFilterProps('price', IntegerFilter),
     },
     {
       title: 'Part number',
       dataIndex: 'partNumber',
       key: 'partNumber',
-      sorter: { multiple: 1 },
+      sorter: sortable ? { multiple: 1 } : undefined,
       render: partNumber => (
         <Tooltip title={partNumber}>{shortenString(partNumber, 20)}</Tooltip>
       ),
@@ -121,14 +124,14 @@ const useProductColumns = ({
       title: 'Cost',
       dataIndex: 'manufactureCost',
       key: 'manufactureCost',
-      sorter: { multiple: 1 },
-      ...getFilterProps('manufactureCost', NumberFilter),
+      sorter: sortable ? { multiple: 1 } : undefined,
+      ...getFilterProps('manufactureCost', IntegerFilter),
     },
     {
       title: 'Unit of measure',
       dataIndex: 'unitOfMeasure',
       key: 'unitOfMeasure',
-      sorter: { multiple: 1 },
+      sorter: sortable ? { multiple: 1 } : undefined,
       render: unitOfMeasure => unitOfMeasure.toLowerCase(),
       ...getFilterProps('unitOfMeasure', UnitOfMeasureFilter),
     },
@@ -139,37 +142,37 @@ const useProductColumns = ({
           title: 'ID',
           dataIndex: 'manufacturerId',
           key: 'manufacturer.id',
-          sorter: { multiple: 1 },
+          sorter: sortable ? { multiple: 1 } : undefined,
           ...(organizationFilter &&
-            getFilterProps('manufacturerId', NumberFilter)),
+            getFilterProps('manufacturerId', IntegerFilter)),
         },
         {
           title: 'Name',
           dataIndex: 'manufacturerName',
           key: 'manufacturer.name',
-          sorter: { multiple: 1 },
+          sorter: sortable ? { multiple: 1 } : undefined,
           ...getFilterProps('manufacturerName', InputFilter),
         },
         {
           title: 'Full name',
           dataIndex: 'manufacturerFullName',
           key: 'manufacturer.fullName',
-          sorter: { multiple: 1 },
+          sorter: sortable ? { multiple: 1 } : undefined,
           ...getFilterProps('manufacturerFullName', InputFilter),
         },
         {
           title: 'Annual turnover',
           dataIndex: 'manufacturerAnnualTurnover',
           key: 'manufacturer.annualTurnover',
-          sorter: { multiple: 1 },
-          ...getFilterProps('manufacturerAnnualTurnover', NumberFilter),
+          sorter: sortable ? { multiple: 1 } : undefined,
+          ...getFilterProps('manufacturerAnnualTurnover', IntegerFilter),
         },
         {
           title: 'Employees count',
           dataIndex: 'manufacturerEmployeesCount',
           key: 'manufacturer.employeesCount',
-          sorter: { multiple: 1 },
-          ...getFilterProps('manufacturerEmployeesCount', NumberFilter),
+          sorter: sortable ? { multiple: 1 } : undefined,
+          ...getFilterProps('manufacturerEmployeesCount', IntegerFilter),
         },
         {
           title: 'Coordinates',
@@ -178,15 +181,15 @@ const useProductColumns = ({
               title: 'X',
               dataIndex: 'manufacturerCoordinatesX',
               key: 'manufacturer.coordinates.x',
-              sorter: { multiple: 1 },
-              ...getFilterProps('manufacturerCoordinatesX', NumberFilter),
+              sorter: sortable ? { multiple: 1 } : undefined,
+              ...getFilterProps('manufacturerCoordinatesX', FloatFilter),
             },
             {
               title: 'Y',
               dataIndex: 'manufacturerCoordinatesY',
               key: 'manufacturer.coordinates.y',
-              sorter: { multiple: 1 },
-              ...getFilterProps('manufacturerCoordinatesY', NumberFilter),
+              sorter: sortable ? { multiple: 1 } : undefined,
+              ...getFilterProps('manufacturerCoordinatesY', FloatFilter),
             },
           ],
         },

@@ -15,7 +15,7 @@ import { AxiosError } from 'axios';
 import { unitsOfMeasure } from 'components/unit-of-measure-filter/unit-of-measure-filter';
 import { NewProduct } from 'models/product';
 import productsApi from 'services/storage/products-api';
-import clearValues from 'utils/clear-values';
+import { clearValues } from 'utils/form-helpers';
 import { ProductColumns } from 'utils/product-helpers';
 import { showError } from 'utils/server-error';
 
@@ -232,11 +232,7 @@ const NewProductModal: FC<NewProductModalProps> = ({
               name="manufacturerCoordinatesX"
               rules={[{ required: true, message: 'X coordinate is required!' }]}
             >
-              <InputNumber
-                style={{ width: '100%' }}
-                max={492}
-                parser={value => Math.trunc(Number(value))}
-              />
+              <InputNumber style={{ width: '100%' }} max={492} />
             </Form.Item>
 
             <Form.Item
@@ -244,11 +240,7 @@ const NewProductModal: FC<NewProductModalProps> = ({
               name="manufacturerCoordinatesY"
               rules={[{ required: true, message: 'X coordinate is required!' }]}
             >
-              <InputNumber
-                style={{ width: '100%' }}
-                min={-139}
-                parser={value => Math.trunc(Number(value))}
-              />
+              <InputNumber style={{ width: '100%' }} min={-139} />
             </Form.Item>
           </>
         )}

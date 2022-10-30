@@ -22,7 +22,7 @@ export const InputFilter: FC<FilterProps> = ({
   />
 );
 
-export const NumberFilter: FC<FilterProps> = ({
+export const IntegerFilter: FC<FilterProps> = ({
   inputRef,
   value,
   onChange,
@@ -30,12 +30,28 @@ export const NumberFilter: FC<FilterProps> = ({
 }) => (
   <InputNumber
     ref={inputRef}
-    placeholder="Search number"
+    placeholder="Search integer"
     value={value}
     onChange={onChange}
     onPressEnter={confirm}
     style={{ display: 'block', width: 'auto' }}
     parser={value => Math.trunc(Number(value))}
+  />
+);
+
+export const FloatFilter: FC<FilterProps> = ({
+  inputRef,
+  value,
+  onChange,
+  confirm,
+}) => (
+  <InputNumber
+    ref={inputRef}
+    placeholder="Search float"
+    value={value}
+    onChange={onChange}
+    onPressEnter={confirm}
+    style={{ display: 'block', width: 'auto' }}
   />
 );
 

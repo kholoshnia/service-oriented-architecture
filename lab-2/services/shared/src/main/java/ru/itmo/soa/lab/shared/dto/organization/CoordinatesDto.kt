@@ -13,7 +13,7 @@ data class CoordinatesDto(
      */
     @field:Max(492)
     @field:NotNull
-    var x: Int,
+    var x: Double,
 
     /**
      * Значение поля должно быть больше -138,
@@ -21,5 +21,5 @@ data class CoordinatesDto(
      */
     @field:Min(-139)
     @field:NotNull
-    var y: Int,
+    var y: Double,
 )

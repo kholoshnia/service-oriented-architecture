@@ -4,8 +4,13 @@ import { Page, PaginationParams } from 'models/utils';
 import { storageClient } from 'utils/axios-clients';
 
 const transferApi = {
-  getTransfers: (params?: PaginationParams) =>
-    storageClient.get<Page<Transfer>>('/transfers', { params }),
+  getTransfers: (
+    paginationParams?: PaginationParams,
+    includeFinished?: Boolean
+  ) =>
+    storageClient.get<Page<Transfer>>('/transfers', {
+      params: { ...paginationParams, includeFinished },
+    }),
 
   addTransfer: (newTransfer: NewTransfer) =>
     storageClient.post<Transfer>('/transfers', newTransfer),

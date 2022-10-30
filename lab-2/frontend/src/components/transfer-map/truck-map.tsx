@@ -1,25 +1,29 @@
-import { Dispatch, FC, SetStateAction, useMemo } from 'react';
+import { Dispatch, FC, SetStateAction, useEffect, useMemo } from 'react';
 
+import { useMutation } from '@tanstack/react-query';
 import { Tooltip } from 'antd';
+import { AxiosError } from 'axios';
 import classNames from 'classnames';
 import { NumberParam, useQueryParam } from 'use-query-params';
 
 import truckTop from 'assets/images/truck-top.png';
 import TruckInfoModal from 'components/transfer-map/truck-info-modal';
-import { Organization, OrganizationId } from 'models/organization';
-import { Transfer, TransferId } from 'models/transfer';
-import debounce from 'utils/debounce';
-import { Normalized } from 'utils/map-helpers';
-import { WithIcon } from 'utils/random-icon';
+import { Coordinates, Organization, OrganizationId } from 'models/organization';
+import { Transfer } from 'models/transfer';
+import transferApi from 'services/storage/transfer-api';
+import debounceDelay from 'utils/debounce-delay';
+import { getInitialCoordinates, Normalized } from 'utils/map-helpers';
+import { showError } from 'utils/server-error';
 import { onKeyDownTruck, onKeyUpTruck } from 'utils/truck-controls';
+import { WithIcon } from 'utils/with-icons';
 
 type TruckMapProps = {
   organizations: Normalized<WithIcon<Organization>>[];
   setFinishId: Dispatch<SetStateAction<OrganizationId | undefined>>;
   transfers: Normalized<Transfer>[];
   mapRef: any;
-  controlledTruckId?: number | null;
-  setControlledTruckId: (transferId: TransferId) => void;
+  controlledTruck?: Normalized<Transfer>;
+  setControlledTruck: (transfer: Normalized<Transfer>) => void;
 };
 
 const TruckMap: FC<TruckMapProps> = ({
@@ -27,8 +31,8 @@ const TruckMap: FC<TruckMapProps> = ({
   setFinishId,
   transfers,
   mapRef,
-  controlledTruckId,
-  setControlledTruckId,
+  controlledTruck,
+  setControlledTruck,
 }) => {
   const [transferId, setTransferId] = useQueryParam('truck', NumberParam);
   const selectedTransfer = useMemo(
@@ -36,9 +40,30 @@ const TruckMap: FC<TruckMapProps> = ({
     [transfers, transferId]
   );
 
-  const setNewCoordinates = debounce((e, transfer: Transfer) => {
-    const truckX = parseFloat(e.target.style.left);
-    const truckY = parseFloat(e.target.style.top);
+  const { mutate: updateCoordinates } = useMutation(
+    ['update-coordinates'],
+    (coordinates: Coordinates) =>
+      transferApi.updateCoordinates(controlledTruck!.id, coordinates),
+    {
+      onError: (e: AxiosError) => showError(e, 'Could not update coordinates!'),
+    }
+  );
+
+  const setNewCoordinates = debounceDelay(target => {
+    if (!target) return;
+    const truckX = parseFloat(target.style.left);
+    const truckY = parseFloat(target.style.top);
+
+    updateCoordinates(
+      getInitialCoordinates(
+        truckX,
+        truckY,
+        organizations,
+        transfers,
+        mapRef.current?.clientWidth,
+        mapRef.current?.clientHeight
+      )
+    );
 
     const finish = organizations.find(
       o =>
@@ -47,7 +72,49 @@ const TruckMap: FC<TruckMapProps> = ({
     );
 
     setFinishId(finish?.id);
-  }, 1000);
+  }, 500);
+
+  const getStyle = (transfer: Normalized<Transfer>) =>
+    transfer.id === controlledTruck?.id
+      ? {
+          top: controlledTruck?.normalized.y,
+          left: controlledTruck?.normalized.x,
+        }
+      : {
+          top: transfer.normalized.y,
+          left: transfer.normalized.x,
+        };
+
+  useEffect(() => {
+    const onKeyDown = event => {
+      const target = document.getElementById(`truck-${controlledTruck?.id}`);
+      onKeyDownTruck({
+        event,
+        target,
+        maxX: mapRef.current?.clientWidth,
+        maxY: mapRef.current?.clientHeight,
+      });
+      setNewCoordinates(target);
+    };
+
+    const onKeyUp = event => {
+      const target = document.getElementById(`truck-${controlledTruck?.id}`);
+      onKeyUpTruck({
+        event,
+        target,
+        maxX: mapRef.current?.clientWidth,
+        maxY: mapRef.current?.clientHeight,
+      });
+      setNewCoordinates(target);
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    document.addEventListener('keyup', onKeyUp);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      document.removeEventListener('keyup', onKeyUp);
+    };
+  }, [controlledTruck]);
 
   return (
     <>
@@ -56,29 +123,15 @@ const TruckMap: FC<TruckMapProps> = ({
           id={`truck-${transfer.id}`}
           key={transfer.id}
           className="transfer-map__truck"
-          style={{
-            top: transfer.normalized.y,
-            left: transfer.normalized.x,
-          }}
-          tabIndex={transfer.id}
-          onKeyDown={e => {
-            onKeyDownTruck(
-              e,
-              mapRef.current?.clientWidth,
-              mapRef.current?.clientHeight
-            );
-            setNewCoordinates(e, transfer);
-          }}
-          onKeyUp={e => {
-            onKeyUpTruck(e);
-            setNewCoordinates(e, transfer);
-          }}
+          style={getStyle(transfer)}
+          onClick={() => setControlledTruck(transfer)}
+          onDoubleClick={() => setTransferId(transfer.id)}
         >
           <Tooltip
             overlayClassName="store-tooltip"
             title={
               <div className="store-tooltip__content">
-                <div className="transfer-map__organization-name">
+                <div>
                   <strong style={{ marginRight: '0.2rem' }}>From:</strong>
                   <span>"{transfer.sender.name}"</span>
                 </div>
@@ -98,16 +151,14 @@ const TruckMap: FC<TruckMapProps> = ({
           >
             <img
               className={classNames('transfer-map__truck-image', {
-                'transfer-map__controlled-truck':
-                  transfer.id === controlledTruckId,
+                'transfer-map__truck-image--controlled':
+                  transfer.id === controlledTruck?.id,
               })}
               style={{
                 width: 20,
               }}
               src={truckTop}
               alt="truck"
-              onClick={() => setControlledTruckId(transfer.id)}
-              onDoubleClick={() => setTransferId(transfer.id)}
             />
           </Tooltip>
         </div>

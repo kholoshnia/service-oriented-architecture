@@ -1,3 +1,4 @@
+import { OrganizationId } from 'models/organization';
 import {
   ManufactureCostGroup,
   NewProduct,
@@ -44,6 +45,15 @@ const productsApi = {
   ) =>
     storageClient.get<Page<Product>>('/products/greater-part-number', {
       params: { ...paginationParams, partNumber },
+    }),
+
+  getTransferProductsPage: (
+    organizationId: OrganizationId,
+    paginationParams?: PaginationParams,
+    filterParams?: ProductFilters
+  ) =>
+    storageClient.get<Page<Product>>(`/products/${organizationId}/transfer`, {
+      params: { ...paginationParams, ...filterParams },
     }),
 };
 

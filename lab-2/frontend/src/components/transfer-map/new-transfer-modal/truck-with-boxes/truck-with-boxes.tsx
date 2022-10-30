@@ -1,19 +1,21 @@
 import { FC, useEffect, useRef, useState } from 'react';
 import './truck-with-boxes.scss';
 
+import classNames from 'classnames';
 import { Engine, Render, Runner, Bodies, Composite, Body } from 'matter-js';
 
 import box from 'assets/images/box.png';
 import truck from 'assets/images/truck.png';
-import { getSize } from 'utils/map-helpers';
+import { getElementSize } from 'utils/map-helpers';
 
 const getRandomRange = (min, max): number => Math.random() * (max - min) + min;
 
 type TruckWithBoxesProps = {
   boxesCount: number;
+  gone: boolean;
 };
 
-const TruckWithBoxes: FC<TruckWithBoxesProps> = ({ boxesCount }) => {
+const TruckWithBoxes: FC<TruckWithBoxesProps> = ({ boxesCount, gone }) => {
   const ref = useRef<HTMLDivElement>(null);
   const truckRef = useRef<HTMLImageElement>(null);
 
@@ -22,7 +24,7 @@ const TruckWithBoxes: FC<TruckWithBoxesProps> = ({ boxesCount }) => {
 
   useEffect(() => {
     if (!ref.current) return;
-    const { width, height } = getSize(ref.current);
+    const { width, height } = getElementSize(ref.current);
 
     const engine = Engine.create();
     const render = Render.create({
@@ -81,7 +83,7 @@ const TruckWithBoxes: FC<TruckWithBoxesProps> = ({ boxesCount }) => {
       }, 3000);
     }
 
-    const { width } = getSize(ref.current);
+    const { width } = getElementSize(ref.current);
 
     const createRandomBox = () => {
       const boxX = getRandomRange(80, width - 80);
@@ -119,7 +121,11 @@ const TruckWithBoxes: FC<TruckWithBoxesProps> = ({ boxesCount }) => {
   }, [world, boxesCount]);
 
   return (
-    <div className="truck-with-boxes">
+    <div
+      className={classNames('truck-with-boxes', {
+        'truck-with-boxes--gone': gone,
+      })}
+    >
       <div className="truck-with-boxes__truck">
         {boxesCount === 0 && (
           <span className="truck-with-boxes__text">Select some products!</span>

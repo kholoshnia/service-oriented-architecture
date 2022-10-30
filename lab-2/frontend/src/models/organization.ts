@@ -23,8 +23,8 @@ export type NewOrganization = {
 };
 
 export type OrganizationFilters = {
-  id: OrganizationId;
-  name: string;
+  id?: OrganizationId;
+  name?: string;
   fullName?: string;
   annualTurnover?: number;
   employeesCount?: number;

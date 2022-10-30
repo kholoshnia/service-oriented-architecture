@@ -14,7 +14,7 @@ type TruckInfoModalProps = {
 
 const TruckInfoModal: FC<TruckInfoModalProps> = ({ open, close, transfer }) => (
   <Modal
-    className="transfer-info-modal"
+    className="truck-info-modal"
     title={`Transfer from "${transfer.sender.name}"`}
     open={open}
     onCancel={close}
@@ -29,6 +29,7 @@ const TruckInfoModal: FC<TruckInfoModalProps> = ({ open, close, transfer }) => (
     <ProductTable
       products={transfer.products ?? []}
       total={transfer.products.length}
+      sortable={false}
     />
   </Modal>
 );

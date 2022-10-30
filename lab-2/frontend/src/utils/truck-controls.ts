@@ -1,24 +1,79 @@
-let target, maxX, maxY;
+import { KeyboardEvent } from 'react';
+
+let target: HTMLElement;
+let xBoundary: number;
+let yBoundary: number;
+
+const directions = {
+  left: false,
+  right: false,
+  up: false,
+  down: false,
+};
+
+export type onKeyParams = {
+  event: KeyboardEvent<any>;
+  target?: HTMLElement | null;
+  maxX: number;
+  maxY: number;
+};
+
+const onKeyPressed = (
+  { event, target: currentTarget, maxX, maxY }: onKeyParams,
+  pressed: boolean
+) => {
+  if (!currentTarget) return;
+  target = currentTarget;
+  xBoundary = maxX;
+  yBoundary = maxY;
+
+  switch (event.key) {
+    case 'ArrowRight':
+    case 'd':
+      directions.right = pressed;
+      break;
+    case 'ArrowLeft':
+    case 'a':
+      directions.left = pressed;
+      break;
+    case 'ArrowUp':
+    case 'w':
+      directions.up = pressed;
+      break;
+    case 'ArrowDown':
+    case 's':
+      directions.down = pressed;
+      break;
+    default:
+      break;
+  }
+};
+
+export const onKeyDownTruck = (params: onKeyParams) =>
+  onKeyPressed(params, true);
+
+export const onKeyUpTruck = (params: onKeyParams) =>
+  onKeyPressed(params, false);
 
 const speed = 2.5;
 
-const addLeft = left => {
+const addToX = (left: number) => {
   const value = parseFloat(target.style.left) + left;
-  if (value >= 0 && value <= maxX) target.style.left = `${value}px`;
+  if (value >= 0 && value <= xBoundary) target.style.left = `${value}px`;
 };
 
-const addTop = top => {
+const addToY = (top: number) => {
   const value = parseFloat(target.style.top) + top;
-  if (value >= 0 && value <= maxY) target.style.top = `${value}px`;
+  if (value >= 0 && value <= yBoundary) target.style.top = `${value}px`;
 };
 
-const moveRight = () => addLeft(speed);
-const moveLeft = () => addLeft(-speed);
-const moveDown = () => addTop(speed);
-const moveUp = () => addTop(-speed);
+const moveRight = () => addToX(speed);
+const moveLeft = () => addToX(-speed);
+const moveDown = () => addToY(speed);
+const moveUp = () => addToY(-speed);
 
 let deg = 180;
-const rotate = newDeg => {
+const rotateShortest = newDeg => {
   let rotation;
   deg = deg || 0;
   rotation = deg % 360;
@@ -29,128 +84,46 @@ const rotate = newDeg => {
   target.style.transform = `translate(-50%, -50%) rotate(${deg}deg)`;
 };
 
-const directions = {
-  left: false,
-  right: false,
-  up: false,
-  down: false,
-};
-
-export const onKeyDownTruck = (e, greatestX, greatestY) => {
-  target = e.target;
-  maxX = greatestX;
-  maxY = greatestY;
-
-  if ('code' in e) {
-    switch (e.code) {
-      case 'Unidentified':
-        break;
-      case 'ArrowRight':
-      case 'KeyD':
-        directions.right = true;
-        break;
-      case 'ArrowLeft':
-      case 'KeyA':
-        directions.left = true;
-        break;
-      case 'ArrowUp':
-      case 'KeyW':
-        directions.up = true;
-        break;
-      case 'ArrowDown':
-      case 'KeyS':
-        directions.down = true;
-        break;
-      default:
-        break;
-    }
+const animateMovement = () => {
+  if (directions.right) {
+    moveRight();
+  } else if (directions.left) {
+    moveLeft();
   }
-
-  if (e.keyCode === 39) {
-    directions.right = true;
-  } else if (e.keyCode === 37) {
-    directions.left = true;
-  }
-  if (e.keyCode === 40) {
-    directions.down = true;
-  } else if (e.keyCode === 38) {
-    directions.up = true;
+  if (directions.down) {
+    moveDown();
+  } else if (directions.up) {
+    moveUp();
   }
 };
 
-export const onKeyUpTruck = e => {
-  target = e.target;
-
-  if ('code' in e) {
-    switch (e.code) {
-      case 'Unidentified':
-        break;
-      case 'ArrowRight':
-      case 'KeyD':
-        directions.right = false;
-        break;
-      case 'ArrowLeft':
-      case 'KeyA':
-        directions.left = false;
-        break;
-      case 'ArrowUp':
-      case 'KeyW':
-        directions.up = false;
-        break;
-      case 'ArrowDown':
-      case 'KeyS':
-        directions.down = false;
-        break;
-      default:
-        break;
-    }
-  }
-
-  if (e.keyCode === 39) {
-    directions.right = false;
-  } else if (e.keyCode === 37) {
-    directions.left = false;
-  }
-  if (e.keyCode === 40) {
-    directions.down = false;
-  } else if (e.keyCode === 38) {
-    directions.up = false;
+const animateRotation = () => {
+  if (directions.up && directions.right) {
+    rotateShortest(45);
+  } else if (directions.right && directions.down) {
+    rotateShortest(135);
+  } else if (directions.down && directions.left) {
+    rotateShortest(-135);
+  } else if (directions.left && directions.up) {
+    rotateShortest(-45);
+  } else if (directions.right) {
+    rotateShortest(90);
+  } else if (directions.left) {
+    rotateShortest(-90);
+  } else if (directions.down) {
+    rotateShortest(180);
+  } else if (directions.up) {
+    rotateShortest(0);
   }
 };
 
-const draw = () => {
+const animate = () => {
   if (target) {
-    if (directions.right) {
-      moveRight();
-    } else if (directions.left) {
-      moveLeft();
-    }
-    if (directions.down) {
-      moveDown();
-    } else if (directions.up) {
-      moveUp();
-    }
-
-    if (directions.up && directions.right) {
-      rotate(45);
-    } else if (directions.right && directions.down) {
-      rotate(135);
-    } else if (directions.down && directions.left) {
-      rotate(-135);
-    } else if (directions.left && directions.up) {
-      rotate(-45);
-    } else if (directions.right) {
-      rotate(90);
-    } else if (directions.left) {
-      rotate(-90);
-    } else if (directions.down) {
-      rotate(180);
-    } else if (directions.up) {
-      rotate(0);
-    }
+    animateMovement();
+    animateRotation();
   }
 
-  requestAnimationFrame(draw);
+  requestAnimationFrame(animate);
 };
 
-draw();
+animate();

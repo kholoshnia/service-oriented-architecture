@@ -1,52 +1,74 @@
 import { Coordinates } from 'models/organization';
-import normalize from 'utils/normalize';
+import { getUniqueMinMax, normalize } from 'utils/math-helpers';
 
-type NormalizableItem = {
+export type NormalizableItem = {
   id: number;
   coordinates: Coordinates;
 };
 
-export const getRange = <Item extends { id: number }>(
-  data: Item[],
-  range: number,
-  getValue: (data: Item) => number
-): [number, number] => {
-  if (data.length === 0) return [0, range];
-
-  const minBy = data.reduce((p, v) => (getValue(p) < getValue(v) ? p : v));
-  const exceptMinBy = data.filter(o => o.id !== minBy.id);
-
-  if (exceptMinBy.length === 0) return [getValue(minBy), range];
-
-  const maxBy = exceptMinBy.reduce((p, v) =>
-    getValue(p) >= getValue(v) ? p : v
-  );
-
-  return [getValue(minBy), getValue(maxBy)];
+export const getRanges = <
+  First extends NormalizableItem,
+  Second extends NormalizableItem
+>(
+  first: First[],
+  second: Second[],
+  width: number,
+  height: number
+) => {
+  const data = [...first, ...second];
+  const [minX, maxX] = getUniqueMinMax(data, width, o => o.coordinates.x);
+  const [minY, maxY] = getUniqueMinMax(data, height, o => o.coordinates.y);
+  return { minX, maxX, minY, maxY };
 };
 
-export type Normalized<T> = T & { normalized: Coordinates };
+export type Normalized<T> = T & {
+  normalized: Coordinates;
+};
 
-const normalizeCoordinates = <Item extends NormalizableItem>(
-  data: Item[],
+export const normalizeCoordinates = <
+  First extends NormalizableItem,
+  Second extends NormalizableItem
+>(
+  first: First[],
+  second: Second[],
   width = 0,
   height = 0
-): Normalized<Item>[] => {
-  const [minX, maxX] = getRange(data, width, o => o.coordinates.x);
-  const [minY, maxY] = getRange(data, height, o => o.coordinates.y);
+): [Normalized<First>[], Normalized<Second>[]] => {
+  const { minX, maxX, minY, maxY } = getRanges(first, second, width, height);
 
-  return data.map(item => ({
-    ...item,
-    normalized: {
-      x: normalize(item.coordinates.x, minX, maxX, width),
-      y: normalize(item.coordinates.y, minY, maxY, height),
-    },
-  }));
+  const normalizeData = <Item extends NormalizableItem>(
+    data: Item[]
+  ): Normalized<Item>[] =>
+    data.map(item => ({
+      ...item,
+      normalized: {
+        x: normalize(item.coordinates.x, minX, maxX, width),
+        y: normalize(item.coordinates.y, minY, maxY, height),
+      },
+    }));
+
+  return [normalizeData(first), normalizeData(second)];
 };
 
-export default normalizeCoordinates;
+export const getInitialCoordinates = <
+  First extends NormalizableItem,
+  Second extends NormalizableItem
+>(
+  x: number,
+  y: number,
+  first: Normalized<First>[],
+  second: Normalized<Second>[],
+  width = 0,
+  height = 0
+): Coordinates => {
+  const { maxX, maxY } = getRanges(first, second, width, height);
+  return {
+    x: normalize(x, 0, width, maxX),
+    y: normalize(y, 0, height, maxY),
+  };
+};
 
-export const getSize = (el: HTMLElement) => {
+export const getElementSize = (el: HTMLElement) => {
   const { width, height } = getComputedStyle(el);
   return { width: parseFloat(width), height: parseFloat(height) };
 };

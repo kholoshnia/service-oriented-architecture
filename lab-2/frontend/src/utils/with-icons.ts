@@ -5,9 +5,11 @@ import store4 from 'assets/images/store-icons/store-4.png';
 import store5 from 'assets/images/store-icons/store-5.png';
 import { Organization } from 'models/organization';
 
-export type WithIcon<T> = T & { iconSrc: string };
+export type WithIcon<T> = T & {
+  iconSrc: string;
+};
 
-const getIcon = (size: number) => {
+const sizeToIcon = (size: number) => {
   if (size <= 5) return store1;
   if (size <= 7) return store2;
   if (size <= 10) return store3;
@@ -15,12 +17,10 @@ const getIcon = (size: number) => {
   return store5;
 };
 
-const withRandomIcon = (
-  organizations: Organization[]
-): WithIcon<Organization>[] =>
+const withIcons = (organizations: Organization[]): WithIcon<Organization>[] =>
   organizations.map(o => ({
     ...o,
-    iconSrc: getIcon(String(o.name).length),
+    iconSrc: sizeToIcon(String(o.name).length),
   }));
 
-export default withRandomIcon;
+export default withIcons;

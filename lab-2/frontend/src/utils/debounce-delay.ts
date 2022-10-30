@@ -1,4 +1,4 @@
-const debounce = (callback: Function, delay: number) => {
+const debounceDelay = (callback: Function, delay: number) => {
   let started = Date.now();
   return (...args) => {
     setTimeout(() => {
@@ -11,4 +11,4 @@ const debounce = (callback: Function, delay: number) => {
   };
 };
 
-export default debounce;
+export default debounceDelay;

@@ -1,1 +1,1 @@
-export { default } from 'components/new-product-modal/new-product-modal';
+export { default } from './new-product-modal';

@@ -6,19 +6,24 @@ import { NumberParam, useQueryParam } from 'use-query-params';
 
 import NewTransferModal from 'components/transfer-map/new-transfer-modal';
 import { Organization, OrganizationId } from 'models/organization';
+import { Transfer } from 'models/transfer';
 import { Normalized } from 'utils/map-helpers';
-import { WithIcon } from 'utils/random-icon';
+import { WithIcon } from 'utils/with-icons';
 
 type OrganizationsMapProps = {
   organizations: Normalized<WithIcon<Organization>>[];
   finishId?: OrganizationId;
   finishTransfer: (organizationId: OrganizationId) => void;
+  refetchTransfers: () => void;
+  setControlledTruck: (transfer: Normalized<Transfer>) => void;
 };
 
 const OrganizationsMap: FC<OrganizationsMapProps> = ({
   organizations,
   finishId,
   finishTransfer,
+  refetchTransfers,
+  setControlledTruck,
 }) => {
   const [organizationId, setOrganizationId] = useQueryParam(
     'organization',
@@ -96,6 +101,8 @@ const OrganizationsMap: FC<OrganizationsMapProps> = ({
           open={!!selectedOrganization}
           close={() => setOrganizationId(undefined)}
           organization={selectedOrganization}
+          refetchTransfers={refetchTransfers}
+          setControlledTruck={setControlledTruck}
         />
       )}
     </>
