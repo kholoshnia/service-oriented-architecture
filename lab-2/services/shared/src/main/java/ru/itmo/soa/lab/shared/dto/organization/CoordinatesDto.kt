@@ -1,4 +1,4 @@
-package ru.itmo.soa.lab.shared.dto.product
+package ru.itmo.soa.lab.shared.dto.organization
 
 import com.fasterxml.jackson.annotation.JsonRootName
 import javax.validation.constraints.Max

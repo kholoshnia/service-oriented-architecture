@@ -20,7 +20,7 @@ class Coordinates(
     @field:Max(492)
     @field:NotNull
     @field:Column(nullable = false)
-    var x: Int,
+    var x: Double,
 
     /**
      * Значение поля должно быть больше -138,
@@ -29,5 +29,5 @@ class Coordinates(
     @field:Min(-139)
     @field:NotNull
     @field:Column(nullable = false)
-    var y: Int,
+    var y: Double,
 )

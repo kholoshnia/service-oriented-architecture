@@ -1,7 +1,7 @@
 package ru.itmo.soa.lab.storage.model.product.converter
 
 import org.springframework.stereotype.Component
-import ru.itmo.soa.lab.shared.dto.product.CoordinatesDto
+import ru.itmo.soa.lab.shared.dto.organization.CoordinatesDto
 import ru.itmo.soa.lab.storage.model.product.entity.Coordinates
 import ru.itmo.soa.lab.storage.utils.DtoConverter
 

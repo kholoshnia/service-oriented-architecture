@@ -14,3 +14,6 @@ class TransferNotOwnerException(message: String = "Some products in transfer doe
 
 class AlreadyInTransferException(message: String = "Some products are already in transfer.") :
     BaseException(message, HttpStatus.BAD_REQUEST)
+
+class TooFarException(message: String = "It is too far to finish transfer.") :
+    BaseException(message, HttpStatus.BAD_REQUEST)

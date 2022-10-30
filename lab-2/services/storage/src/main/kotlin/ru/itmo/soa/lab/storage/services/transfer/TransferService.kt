@@ -3,9 +3,10 @@ package ru.itmo.soa.lab.storage.services.transfer
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import ru.itmo.soa.lab.shared.dto.product.CoordinatesDto
+import ru.itmo.soa.lab.shared.dto.organization.CoordinatesDto
 import ru.itmo.soa.lab.shared.dto.transfer.NewTransferDto
 import ru.itmo.soa.lab.shared.dto.transfer.TransferDto
+import ru.itmo.soa.lab.shared.dto.utils.PageDto
 import ru.itmo.soa.lab.storage.model.organization.entity.OrganizationId
 import ru.itmo.soa.lab.storage.model.product.converter.CoordinatesConverter
 import ru.itmo.soa.lab.storage.model.transfer.converter.NewTransferConverter
@@ -27,8 +28,11 @@ class TransferService(
     private val coordinatesConverter: CoordinatesConverter,
     private val pageConverter: PageConverter
 ) {
-    fun getTransfersPage(pageable: Pageable) =
-        pageConverter.toDto(transferRepository.findAll(pageable).map(transferConverter::toDto))
+    fun getTransfersPage(pageable: Pageable, includeFinished: Boolean): PageDto<TransferDto> {
+        val transfers = if (includeFinished) transferRepository.findAll(pageable)
+        else transferRepository.findAllByFinishedAtIsNull(pageable)
+        return pageConverter.toDto(transfers.map(transferConverter::toDto))
+    }
 
     @Transactional
     fun addTransfer(newTransferDto: NewTransferDto): TransferDto {
@@ -57,6 +61,11 @@ class TransferService(
 
         transfer.finishedAt = LocalDateTime.now()
         transfer.receiver = receiver
+
+        if (kotlin.math.abs(transfer.coordinates.x - receiver.coordinates.x) >= 20
+            || kotlin.math.abs(transfer.coordinates.y - receiver.coordinates.y) >= 20
+        ) throw TooFarException()
+
         transfer.coordinates = receiver.coordinates
         transfer.products.map {
             it.manufacturer = receiver

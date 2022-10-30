@@ -17,7 +17,6 @@ data class ProductFilters(
     val manufacturerFullName: String? = null,
     val manufacturerAnnualTurnover: Int? = null,
     val manufacturerEmployeesCount: Long? = null,
-    val manufacturerCoordinatesX: Int? = null,
-    val manufacturerCoordinatesY: Int? = null,
-    val transferred: Boolean? = null
+    val manufacturerCoordinatesX: Double? = null,
+    val manufacturerCoordinatesY: Double? = null,
 )

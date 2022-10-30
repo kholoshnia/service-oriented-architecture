@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import ru.itmo.soa.lab.shared.dto.product.NewProductDto
 import ru.itmo.soa.lab.shared.dto.product.ProductDto
+import ru.itmo.soa.lab.shared.dto.utils.PageDto
+import ru.itmo.soa.lab.storage.model.organization.entity.OrganizationId
 import ru.itmo.soa.lab.storage.model.product.converter.NewProductConverter
 import ru.itmo.soa.lab.storage.model.product.converter.ProductConverter
 import ru.itmo.soa.lab.storage.model.product.entity.Product
@@ -90,4 +92,13 @@ class ProductService(
 
     @Transactional
     fun saveAll(products: List<Product>) = productRepository.saveAll(products).map(productConverter::toDto)
+
+    fun getTransferProductsPage(
+        productFilters: ProductFilters,
+        organizationId: OrganizationId,
+        pageable: Pageable
+    ): PageDto<ProductDto> = pageConverter.toDto(
+        productRepository.findTransferProductsPage(productFilters, organizationId, pageable)
+            .map(productConverter::toDto)
+    )
 }

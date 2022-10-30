@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import ru.itmo.soa.lab.shared.dto.product.NewProductDto
 import ru.itmo.soa.lab.shared.dto.product.ProductDto
+import ru.itmo.soa.lab.storage.model.organization.entity.OrganizationId
 import ru.itmo.soa.lab.storage.model.product.entity.ProductId
 import ru.itmo.soa.lab.storage.services.product.ProductService
 import ru.itmo.soa.lab.storage.utils.PageDtoManufactureCostGroupDto
@@ -119,4 +120,11 @@ class ProductController(
         @RequestParam @Size(min = 25, max = 48) partNumber: String,
         @ParameterObject pageable: Pageable
     ) = productService.getGreaterPartNumber(partNumber, pageable)
+
+    @GetMapping("/{organizationId}/transfer")
+    fun getTransferProductsPage(
+        @ParameterObject pageable: Pageable,
+        @ParameterObject productFilters: ProductFilters,
+        @PathVariable organizationId: OrganizationId
+    ) = productService.getTransferProductsPage(productFilters, organizationId, pageable)
 }

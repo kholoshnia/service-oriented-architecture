@@ -2,7 +2,7 @@ package ru.itmo.soa.lab.storage
 
 import ru.itmo.soa.lab.shared.dto.organization.NewOrganizationDto
 import ru.itmo.soa.lab.shared.dto.organization.OrganizationDto
-import ru.itmo.soa.lab.shared.dto.product.CoordinatesDto
+import ru.itmo.soa.lab.shared.dto.organization.CoordinatesDto
 import ru.itmo.soa.lab.shared.dto.product.NewProductDto
 import ru.itmo.soa.lab.shared.dto.product.ProductDto
 import ru.itmo.soa.lab.shared.dto.product.UnitOfMeasure

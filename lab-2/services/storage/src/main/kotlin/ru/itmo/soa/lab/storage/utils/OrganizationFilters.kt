@@ -8,6 +8,6 @@ data class OrganizationFilters(
     val fullName: String? = null,
     val annualTurnover: Int? = null,
     val employeesCount: Long? = null,
-    val coordinatesX: Int? = null,
-    val coordinatesY: Int? = null,
+    val coordinatesX: Double? = null,
+    val coordinatesY: Double? = null,
 )

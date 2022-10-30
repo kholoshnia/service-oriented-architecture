@@ -2,7 +2,7 @@ package ru.itmo.soa.lab.shared.dto.transfer
 
 import com.fasterxml.jackson.annotation.JsonRootName
 import ru.itmo.soa.lab.shared.dto.organization.OrganizationDto
-import ru.itmo.soa.lab.shared.dto.product.CoordinatesDto
+import ru.itmo.soa.lab.shared.dto.organization.CoordinatesDto
 import ru.itmo.soa.lab.shared.dto.product.ProductDto
 import java.time.LocalDateTime
 
