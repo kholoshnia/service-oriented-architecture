@@ -15,7 +15,7 @@ open class StorageClient {
     private val client = HttpClient(Apache) {
         install(Logging)
         defaultRequest {
-            url(System.getenv("STORAGE_API_BASE_URL") ?: "http://localhost:8080/api/v1/")
+            url(System.getenv("STORAGE_API_BASE_URL") ?: "http://localhost:2510/api/v1/")
         }
     }
 

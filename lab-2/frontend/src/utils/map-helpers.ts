@@ -15,9 +15,31 @@ export const getRanges = <
   width: number,
   height: number
 ) => {
-  const data = [...first, ...second];
-  const [minX, maxX] = getUniqueMinMax(data, width, o => o.coordinates.x);
-  const [minY, maxY] = getUniqueMinMax(data, height, o => o.coordinates.y);
+  const data = [
+    ...first.map(el => {
+      el['filterId'] = 'first' + el.id;
+      return el;
+    }),
+    ...second.map(el => {
+      el['filterId'] = 'second' + el.id;
+      return el;
+    }),
+  ];
+
+  const [minX, maxX] = getUniqueMinMax(
+    data,
+    width,
+    item => item.coordinates.x,
+    item => item['filterId']
+  );
+
+  const [minY, maxY] = getUniqueMinMax(
+    data,
+    height,
+    item => item.coordinates.y,
+    item => item['filterId']
+  );
+
   return { minX, maxX, minY, maxY };
 };
 

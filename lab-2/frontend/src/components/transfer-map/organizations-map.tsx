@@ -62,11 +62,11 @@ const OrganizationsMap: FC<OrganizationsMapProps> = ({
                 <div>
                   <span>
                     <strong>x: </strong>
-                    {organization.coordinates.x}
+                    {organization.coordinates.x.toFixed(2)}
                   </span>
                   <span>
                     <strong>y: </strong>
-                    {organization.coordinates.y}
+                    {organization.coordinates.y.toFixed(2)}
                   </span>
                 </div>
               </div>

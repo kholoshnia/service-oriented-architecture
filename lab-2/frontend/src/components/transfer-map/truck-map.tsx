@@ -143,11 +143,11 @@ const TruckMap: FC<TruckMapProps> = ({
                 <div>
                   <span>
                     <strong>x: </strong>
-                    {transfer.coordinates.x}
+                    {transfer.coordinates.x.toFixed(2)}
                   </span>
                   <span>
                     <strong>y: </strong>
-                    {transfer.coordinates.y}
+                    {transfer.coordinates.y.toFixed(2)}
                   </span>
                 </div>
                 <div>Double click for more</div>
