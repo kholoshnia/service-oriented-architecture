@@ -10,6 +10,7 @@ import {
 } from '@ant-design/icons';
 import { Menu, MenuProps, Typography } from 'antd';
 import { useLocation, useNavigate } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import logoSrc from 'assets/images/logo.png';
 
@@ -66,12 +67,12 @@ const Header: FC = () => {
 
   return (
     <>
-      <div className="header-logo">
+      <Link className="header-logo" to="/shop">
         <img src={logoSrc} alt="logo" height="35px" />
         <Title className="header-logo__title" level={3}>
           Online shop
         </Title>
-      </div>
+      </Link>
       <div className="header-menu">
         <Menu
           theme="dark"

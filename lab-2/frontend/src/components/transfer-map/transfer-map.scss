@@ -4,7 +4,7 @@
   width: 100%;
   border-radius: 8px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-  padding: 50px 50px 68.85px;
+  padding: 70px 70px 88.85px;
   background-image: url('../../assets/images/city-map.jpg');
   background-size: 700px 700px;
   overflow: hidden;
@@ -20,6 +20,10 @@
     position: absolute;
     transform: translate(-50%, -50%);
     filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.1));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   &__organization-name {
@@ -29,6 +33,8 @@
     margin-top: 0.3rem;
     border-radius: 8px;
     background: white;
+    padding: 0 2px;
+    max-width: 6rem;
   }
 
   &__truck {
