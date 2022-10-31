@@ -1,12 +1,9 @@
-server:
-  port: 8080
-
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/os-storage-postgres
+    url: jdbc:postgresql://pg:5432/studs
     driverClassName: org.postgresql.Driver
-    username: os-storage-postgres
-    password: os-storage-postgres
+    username:
+    password:
 
   jpa:
     properties:

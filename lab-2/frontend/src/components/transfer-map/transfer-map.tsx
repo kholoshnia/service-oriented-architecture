@@ -59,7 +59,9 @@ const TransferMap: FC<TransferMapProps> = ({
   const { mutate: finishTransfer } = useMutation(
     ['finish-transfer'],
     (organizationId: OrganizationId) =>
-      transferApi.finishTransfer(controlledTruck!.id, organizationId),
+      controlledTruck?.id
+        ? transferApi.finishTransfer(controlledTruck.id, organizationId)
+        : Promise.resolve(undefined),
     {
       onError: (e: AxiosError) => showError(e, 'Could not finish transfer!'),
       onSuccess: () => {

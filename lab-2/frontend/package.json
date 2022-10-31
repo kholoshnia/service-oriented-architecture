@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "yarn@3.2.4",
+  "homepage": "/",
   "scripts": {
     "dev": "react-scripts start",
     "build": "react-scripts build",

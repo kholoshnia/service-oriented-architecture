@@ -7,8 +7,8 @@ import ru.itmo.soa.lab.shared.dto.organization.CoordinatesDto
 import ru.itmo.soa.lab.shared.dto.transfer.NewTransferDto
 import ru.itmo.soa.lab.shared.dto.transfer.TransferDto
 import ru.itmo.soa.lab.shared.dto.utils.PageDto
+import ru.itmo.soa.lab.storage.model.organization.converter.CoordinatesConverter
 import ru.itmo.soa.lab.storage.model.organization.entity.OrganizationId
-import ru.itmo.soa.lab.storage.model.product.converter.CoordinatesConverter
 import ru.itmo.soa.lab.storage.model.transfer.converter.NewTransferConverter
 import ru.itmo.soa.lab.storage.model.transfer.converter.TransferConverter
 import ru.itmo.soa.lab.storage.model.transfer.entity.TransferId
@@ -59,17 +59,14 @@ class TransferService(
         val transfer = transferRepository.findById(transferId).orElseThrow { TransferNotFoundException() }
         val receiver = organizationService.getOrganizationById(receiverId)
 
-        transfer.finishedAt = LocalDateTime.now()
-        transfer.receiver = receiver
-
-        if (kotlin.math.abs(transfer.coordinates.x - receiver.coordinates.x) >= 20
-            || kotlin.math.abs(transfer.coordinates.y - receiver.coordinates.y) >= 20
+        if (kotlin.math.abs(transfer.coordinates.x - receiver.coordinates.x) >= 200
+            || kotlin.math.abs(transfer.coordinates.y - receiver.coordinates.y) >= 200
         ) throw TooFarException()
 
         transfer.coordinates = receiver.coordinates
-        transfer.products.map {
-            it.manufacturer = receiver
-        }
+        transfer.products.map { it.manufacturer = receiver }
+        transfer.finishedAt = LocalDateTime.now()
+        transfer.receiver = receiver
 
         productService.saveAll(transfer.products)
         return transferConverter.toDto(transferRepository.save(transfer))

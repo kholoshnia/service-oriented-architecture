@@ -3,7 +3,7 @@ package ru.itmo.soa.lab.storage.model.transfer.converter
 import org.springframework.stereotype.Component
 import ru.itmo.soa.lab.shared.dto.transfer.TransferDto
 import ru.itmo.soa.lab.storage.model.organization.converter.OrganizationConverter
-import ru.itmo.soa.lab.storage.model.product.converter.CoordinatesConverter
+import ru.itmo.soa.lab.storage.model.organization.converter.CoordinatesConverter
 import ru.itmo.soa.lab.storage.model.product.converter.ProductConverter
 import ru.itmo.soa.lab.storage.model.transfer.entity.Transfer
 import ru.itmo.soa.lab.storage.utils.DtoConverter

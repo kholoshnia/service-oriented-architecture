@@ -3,7 +3,7 @@ package ru.itmo.soa.lab.storage
 import org.springframework.data.domain.PageImpl
 import ru.itmo.soa.lab.shared.dto.product.UnitOfMeasure
 import ru.itmo.soa.lab.storage.model.organization.entity.Organization
-import ru.itmo.soa.lab.storage.model.product.entity.Coordinates
+import ru.itmo.soa.lab.storage.model.organization.entity.Coordinates
 import ru.itmo.soa.lab.storage.model.product.entity.Product
 import java.time.LocalDate
 

@@ -10,3 +10,16 @@ export const clearValues = obj => {
     }
   });
 };
+
+export const toStringDeep = obj => {
+  Object.keys(obj).forEach(key => {
+    if (typeof obj[key] === 'object') {
+      toStringDeep(obj);
+      return;
+    }
+
+    if (typeof obj[key] !== 'string') {
+      obj[key] = String(obj[key]);
+    }
+  });
+};

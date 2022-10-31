@@ -7,7 +7,9 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.get
 import io.ktor.http.appendPathSegments
 import io.ktor.http.parseQueryString
+import org.apache.http.conn.ssl.NoopHostnameVerifier
 import ru.itmo.soa.lab.shared.dto.product.UnitOfMeasure
+import ru.itmo.soa.lab.shop.config.SslSettings
 import javax.enterprise.context.ApplicationScoped
 
 @ApplicationScoped
@@ -15,7 +17,13 @@ open class StorageClient {
     private val client = HttpClient(Apache) {
         install(Logging)
         defaultRequest {
-            url(System.getenv("STORAGE_API_BASE_URL") ?: "http://localhost:2510/api/v1/")
+            url(System.getenv("STORAGE_API_BASE_URL") ?: "")
+        }
+        engine {
+            customizeClient {
+                sslContext = SslSettings.getSslContext()
+                setSSLHostnameVerifier(NoopHostnameVerifier())
+            }
         }
     }
 

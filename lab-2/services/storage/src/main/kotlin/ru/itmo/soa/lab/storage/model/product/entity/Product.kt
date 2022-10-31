@@ -89,6 +89,6 @@ class Product(
     @Column(nullable = false)
     var creationDate: LocalDate? = null
 
-    @ManyToMany(mappedBy = "products")
+    @ManyToMany(mappedBy = "products", cascade = [CascadeType.ALL])
     var transfers: List<Transfer> = listOf()
 }

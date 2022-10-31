@@ -1,8 +1,8 @@
 package ru.itmo.soa.lab.storage.model.transfer.entity
 
 import org.hibernate.annotations.CreationTimestamp
+import ru.itmo.soa.lab.storage.model.organization.entity.Coordinates
 import ru.itmo.soa.lab.storage.model.organization.entity.Organization
-import ru.itmo.soa.lab.storage.model.product.entity.Coordinates
 import ru.itmo.soa.lab.storage.model.product.entity.Product
 import java.time.LocalDateTime
 import javax.persistence.Embedded

@@ -1,7 +1,6 @@
 package ru.itmo.soa.lab.storage.model.organization.entity
 
 import org.hibernate.annotations.Check
-import ru.itmo.soa.lab.storage.model.product.entity.Coordinates
 import javax.persistence.Column
 import javax.persistence.Embedded
 import javax.persistence.Entity

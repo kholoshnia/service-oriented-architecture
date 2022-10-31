@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import ru.itmo.soa.lab.storage.DtoUtil
 import ru.itmo.soa.lab.storage.EntityUtil
+import ru.itmo.soa.lab.storage.model.organization.converter.CoordinatesConverter
 
 @SpringBootTest
 class CoordinatesConverterTest {

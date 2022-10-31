@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import ru.itmo.soa.lab.storage.EntityUtil
+import ru.itmo.soa.lab.storage.model.organization.entity.Coordinates
 import javax.validation.Validation
 
 

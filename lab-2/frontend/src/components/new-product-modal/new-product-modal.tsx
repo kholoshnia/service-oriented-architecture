@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 
 import { useMutation } from '@tanstack/react-query';
 import {
@@ -15,7 +15,7 @@ import { AxiosError } from 'axios';
 import { unitsOfMeasure } from 'components/unit-of-measure-filter/unit-of-measure-filter';
 import { NewProduct } from 'models/product';
 import productsApi from 'services/storage/products-api';
-import { clearValues } from 'utils/form-helpers';
+import { clearValues, toStringDeep } from 'utils/form-helpers';
 import { ProductColumns } from 'utils/product-helpers';
 import { showError } from 'utils/server-error';
 
@@ -66,6 +66,11 @@ const NewProductModal: FC<NewProductModalProps> = ({
       },
     }
   );
+
+  useEffect(() => {
+    if (!productColumns) return;
+    toStringDeep(productColumns);
+  }, [productColumns]);
 
   const onFinish = (values: ProductColumns) => {
     clearValues(values);
@@ -232,7 +237,7 @@ const NewProductModal: FC<NewProductModalProps> = ({
               name="manufacturerCoordinatesX"
               rules={[{ required: true, message: 'X coordinate is required!' }]}
             >
-              <InputNumber style={{ width: '100%' }} max={492} />
+              <InputNumber style={{ width: '100%' }} min={0} max={5000} />
             </Form.Item>
 
             <Form.Item
@@ -240,7 +245,7 @@ const NewProductModal: FC<NewProductModalProps> = ({
               name="manufacturerCoordinatesY"
               rules={[{ required: true, message: 'X coordinate is required!' }]}
             >
-              <InputNumber style={{ width: '100%' }} min={-139} />
+              <InputNumber style={{ width: '100%' }} min={0} max={5000} />
             </Form.Item>
           </>
         )}

@@ -43,7 +43,9 @@ const TruckMap: FC<TruckMapProps> = ({
   const { mutate: updateCoordinates } = useMutation(
     ['update-coordinates'],
     (coordinates: Coordinates) =>
-      transferApi.updateCoordinates(controlledTruck!.id, coordinates),
+      controlledTruck?.id
+        ? transferApi.updateCoordinates(controlledTruck.id, coordinates)
+        : Promise.resolve(undefined),
     {
       retry: false,
       onError: (e: AxiosError) => showError(e, 'Could not update coordinates!'),
