@@ -1,0 +1,30 @@
+server:
+  address: ${SHOP_SERVICE_HOST:localhost}
+  port: ${SHOP_SERVICE_PORT:8081}
+  ssl:
+    key-store-type: PKCS12
+    key-store: ${SSL_P12_PATH:../../ssl/online-shop.com.p12}
+    key-store-password: ${SSL_P12_PASSWORD:123465}
+    key-alias: ${SSL_DOMAIN:online-shop.com}
+
+spring:
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 100
+        one-indexed-parameters: true
+
+springdoc:
+  version: 0.0.1
+  default-consumes-media-type: application/xml
+  default-produces-media-type: application/xml
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui
+    supported-submit-methods: [ ]
+    disable-swagger-default-url: true
+
+config:
+  storage-api-base-url: ${SHOP_STORAGE_API_BASE_URL:https://localhost:8080/api/v1}

@@ -1,0 +1,29 @@
+.storage {
+  &__description {
+    margin-bottom: 0 !important;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    @media (max-width: 720px) {
+      flex-direction: column;
+      align-items: stretch;
+
+      > button {
+        margin-top: 0.5rem;
+      }
+    }
+  }
+
+  &__error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: red;
+  }
+}

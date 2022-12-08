@@ -1,0 +1,33 @@
+.new-transfer-modal {
+  &__content {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+  }
+
+  &__table {
+    max-width: 60%;
+  }
+
+  &__truck {
+    padding-left: 40px;
+    padding-right: 20px;
+    min-height: 25rem;
+    min-width: 25rem;
+    max-width: 25rem;
+    overflow: hidden;
+
+    @media (max-width: 400px) {
+      min-height: 20rem;
+    }
+  }
+
+  &__row {
+    display: flex;
+
+    strong:first-of-type {
+      margin-right: 1rem;
+    }
+  }
+}

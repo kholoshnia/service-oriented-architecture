@@ -1,0 +1,28 @@
+.transfer {
+  &__header {
+    display: flex;
+    margin-bottom: 1.5rem;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__title {
+    margin-bottom: 0.25rem !important;
+  }
+
+  &__pagination {
+    > div {
+      display: flex;
+      justify-content: end;
+      align-items: center;
+
+      &:first-of-type {
+        margin-bottom: 0.1rem;
+      }
+
+      > span {
+        margin-right: 1rem;
+      }
+    }
+  }
+}
