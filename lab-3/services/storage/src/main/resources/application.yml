@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8443
   ssl:
     key-store-type: PKCS12
     key-store: ../../ssl/online-shop.com.p12
@@ -35,6 +35,8 @@ spring:
   cloud:
     consul:
       discovery:
+        scheme: https
+        prefer-ip-address: true
         instance-id: ${spring.application.name}:${random.int}
         health-check-url: https://host.docker.internal:${server.port}/actuator/health
         health-check-tls-skip-verify: true

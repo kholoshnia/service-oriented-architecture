@@ -14,7 +14,6 @@ services:
     ports:
       - "${STORAGE_POSTGRES_PORT}:5432"
 
-
   os-storage-consul:
     container_name: ${STORAGE_CONSUL_NAME}
     image: hashicorp/consul:1.11.2
@@ -23,85 +22,51 @@ services:
       - os-storage-network
     ports:
       - "${STORAGE_CONSUL_UI_PORT}:8500"
+      - "8600:8600"
 
-  os-storage-service-1:
-    container_name: ${STORAGE_SERVICE_1_NAME}
+  os-storage-service:
     build:
       context: services
       dockerfile: storage/${STORAGE_SERVICE_DOCKERFILE}
     restart: always
     environment:
       server.address: ${STORAGE_SERVICE_HOST}
-      server.port: ${STORAGE_SERVICE_1_PORT}
+      server.port: ${STORAGE_SERVICE_PORT}
       server.ssl.key-alias: ${SSL_DOMAIN}
       server.ssl.key-store: ${SSL_P12_PATH}
       server.ssl.key-store-password: ${SSL_P12_PASSWORD}
-      spring.application.name: ${STORAGE_SERVICE_1_NAME}
+      spring.application.name: ${STORAGE_SERVICE_NAME}
       spring.datasource.url: ${STORAGE_SERVICE_POSTGRES_URL}
       spring.datasource.username: ${STORAGE_POSTGRES_USERNAME}
       spring.datasource.password: ${STORAGE_POSTGRES_PASSWORD}
       spring.cloud.consul.host: ${STORAGE_CONSUL_NAME}
       spring.cloud.consul.port: ${STORAGE_CONSUL_PORT}
-      spring.cloud.consul.discovery.instance-id: ${STORAGE_SERVICE_1_ID}
-      spring.cloud.consul.discovery.health-check-url: ${STORAGE_SERVICE_1_HEALTH_CHECK_URL}
+      spring.cloud.consul.discovery.health-check-url: null
       spring.cloud.consul.discovery.health-check-interval: ${STORAGE_SERVICE_HEALTH_CHECK_INTERVAL}
     depends_on:
       - os-storage-postgres
       - os-storage-consul
     networks:
       - os-storage-network
-    ports:
-      - "${STORAGE_SERVICE_1_PORT}:${STORAGE_SERVICE_1_PORT}"
     volumes:
       - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
-
-  os-storage-service-2:
-    container_name: ${STORAGE_SERVICE_2_NAME}
-    build:
-      context: services
-      dockerfile: storage/${STORAGE_SERVICE_DOCKERFILE}
-    restart: always
-    environment:
-      server.address: ${STORAGE_SERVICE_HOST}
-      server.port: ${STORAGE_SERVICE_2_PORT}
-      server.ssl.key-alias: ${SSL_DOMAIN}
-      server.ssl.key-store: ${SSL_P12_PATH}
-      server.ssl.key-store-password: ${SSL_P12_PASSWORD}
-      spring.application.name: ${STORAGE_SERVICE_2_NAME}
-      spring.datasource.url: ${STORAGE_SERVICE_POSTGRES_URL}
-      spring.datasource.username: ${STORAGE_POSTGRES_USERNAME}
-      spring.datasource.password: ${STORAGE_POSTGRES_PASSWORD}
-      spring.cloud.consul.host: ${STORAGE_CONSUL_NAME}
-      spring.cloud.consul.port: ${STORAGE_CONSUL_PORT}
-      spring.cloud.consul.discovery.instance-id: ${STORAGE_SERVICE_2_ID}
-      spring.cloud.consul.discovery.health-check-url: ${STORAGE_SERVICE_2_HEALTH_CHECK_URL}
-      spring.cloud.consul.discovery.health-check-interval: ${STORAGE_SERVICE_HEALTH_CHECK_INTERVAL}
-    depends_on:
-      - os-storage-postgres
-      - os-storage-consul
-    networks:
-      - os-storage-network
-    ports:
-      - "${STORAGE_SERVICE_2_PORT}:${STORAGE_SERVICE_2_PORT}"
-    volumes:
-      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
+    deploy:
+      replicas: ${STORAGE_SERVICE_INSTANCES}
 
   os-storage-haproxy:
     container_name: ${STORAGE_HAPROXY_NAME}
-    image: haproxy:2.4.20-alpine
+    image: haproxy:2.4.20-bullseye
     restart: always
     environment:
       STORAGE_HAPROXY_STATS_PORT: ${STORAGE_HAPROXY_STATS_PORT}
       STORAGE_HAPROXY_PORT: ${STORAGE_HAPROXY_PORT}
-      STORAGE_SERVICE_1_HOST: ${STORAGE_SERVICE_1_NAME}
-      STORAGE_SERVICE_1_PORT: ${STORAGE_SERVICE_1_PORT}
-      STORAGE_SERVICE_2_HOST: ${STORAGE_SERVICE_2_NAME}
-      STORAGE_SERVICE_2_PORT: ${STORAGE_SERVICE_2_PORT}
       STORAGE_SERVICE_HEALTH_CHECK_INTERVAL: ${STORAGE_SERVICE_HEALTH_CHECK_INTERVAL}
+      STORAGE_SERVICE_INSTANCES: ${STORAGE_SERVICE_INSTANCES}
+      STORAGE_CONSUL_HOST: ${STORAGE_CONSUL_NAME}
+      STORAGE_CONSUL_DNS_PORT: ${STORAGE_CONSUL_DNS_PORT}
       SSL_PEM_PATH: ${SSL_PEM_PATH}
     depends_on:
-      - os-storage-service-1
-      - os-storage-service-2
+      - os-storage-consul
     networks:
       - os-storage-network
     ports:
@@ -151,8 +116,11 @@ services:
 
 networks:
   os-storage-network:
+    name: os-storage-network
     driver: bridge
   os-shop-network:
+    name: os-shop-network
     driver: bridge
   os-frontend-network:
+    name: os-frontend-network
     external: true
