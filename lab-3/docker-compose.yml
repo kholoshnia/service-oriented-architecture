@@ -4,6 +4,7 @@ services:
   os-storage-postgres:
     container_name: ${STORAGE_POSTGRES_NAME}
     image: postgres:13.4-alpine
+    restart: always
     environment:
       POSTGRES_USER: ${STORAGE_POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${STORAGE_POSTGRES_PASSWORD}
@@ -13,70 +14,114 @@ services:
     networks:
       - os-storage-network
 
-  os-storage-service:
-    container_name: ${STORAGE_SERVICE_NAME}
-    build:
-      context: services
-      dockerfile: storage/Dockerfile
-    environment:
-      STORAGE_SERVICE_HOST: ${STORAGE_SERVICE_HOST}
-      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
-      STORAGE_POSTGRES_HOST: ${STORAGE_POSTGRES_NAME}
-      STORAGE_POSTGRES_PORT: ${STORAGE_POSTGRES_PORT}
-      STORAGE_POSTGRES_USERNAME: ${STORAGE_POSTGRES_USERNAME}
-      STORAGE_POSTGRES_PASSWORD: ${STORAGE_POSTGRES_PASSWORD}
-      STORAGE_POSTGRES_DATABASE: ${STORAGE_POSTGRES_DATABASE}
-      SSL_P12_PATH: ${SSL_P12_PATH}
-      SSL_P12_PASSWORD: ${SSL_P12_PASSWORD}
-      SSL_DOMAIN: ${SSL_DOMAIN}
-    depends_on:
-      - os-storage-postgres
+  os-storage-consul:
+    container_name: ${STORAGE_CONSUL_NAME}
+    image: hashicorp/consul:1.11.2
+    restart: always
     ports:
-      - "${STORAGE_SERVICE_PORT}:${STORAGE_SERVICE_PORT}"
+      - "${STORAGE_CONSUL_UI_PORT}:8500"
     networks:
       - os-storage-network
-      - os-shop-network
-      - os-frontend-network
-    volumes:
-      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
 
-  os-shop-service:
-    container_name: ${SHOP_SERVICE_NAME}
+  os-storage-service-1:
+    container_name: ${STORAGE_SERVICE_1_NAME}
     build:
       context: services
-      dockerfile: shop/Dockerfile
+      dockerfile: storage/${STORAGE_SERVICE_DOCKERFILE}
+    restart: always
     environment:
-      SHOP_SERVICE_HOST: ${SHOP_SERVICE_HOST}
-      SHOP_SERVICE_PORT: ${SHOP_SERVICE_PORT}
-      SHOP_STORAGE_API_BASE_URL: ${SHOP_STORAGE_API_BASE_URL}
-      SSL_P12_PATH: ${SSL_P12_PATH}
-      SSL_P12_PASSWORD: ${SSL_P12_PASSWORD}
-      SSL_DOMAIN: ${SSL_DOMAIN}
-    ports:
-      - "${SHOP_SERVICE_PORT}:${SHOP_SERVICE_PORT}"
+      server.address: ${STORAGE_SERVICE_HOST}
+      server.port: ${STORAGE_SERVICE_1_PORT}
+      server.ssl.key-alias: ${SSL_DOMAIN}
+      server.ssl.key-store: ${SSL_P12_PATH}
+      server.ssl.key-store-password: ${SSL_P12_PASSWORD}
+      spring.application.name: ${STORAGE_SERVICE_1_NAME}
+      spring.datasource.url: ${STORAGE_SERVICE_POSTGRES_URL}
+      spring.datasource.username: ${STORAGE_POSTGRES_USERNAME}
+      spring.datasource.password: ${STORAGE_POSTGRES_PASSWORD}
+      spring.cloud.consul.host: ${STORAGE_CONSUL_NAME}
+      spring.cloud.consul.port: ${STORAGE_CONSUL_PORT}
+      spring.cloud.consul.discovery.instance-id: ${STORAGE_SERVICE_1_ID}
+      spring.cloud.consul.discovery.health-check-url: ${STORAGE_SERVICE_1_HEALTH_CHECK_URL}
+      spring.cloud.consul.discovery.health-check-interval: ${STORAGE_SERVICE_HEALTH_CHECK_INTERVAL}
+    depends_on:
+      - os-storage-postgres
+      - os-storage-consul
     networks:
-      - os-shop-network
-      - os-frontend-network
+      - os-storage-network
+    ports:
+      - "${STORAGE_SERVICE_1_PORT}:${STORAGE_SERVICE_1_PORT}"
     volumes:
       - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
 
-  os-frontend:
-    container_name: ${FRONTEND_NAME}
+  os-storage-service-2:
+    container_name: ${STORAGE_SERVICE_2_NAME}
     build:
-      context: frontend
-      args:
-        REACT_APP_STORAGE_API_URL: ${FRONTEND_STORAGE_API_BASE_URL}
-        REACT_APP_SHOP_API_URL: ${FRONTEND_SHOP_API_BASE_URL}
+      context: services
+      dockerfile: storage/${STORAGE_SERVICE_DOCKERFILE}
+    restart: always
     environment:
-      SSL_DOMAIN: ${SSL_DOMAIN}
-      SSL_CRT_PATH: ${SSL_CRT_PATH}
-      SSL_KEY_PATH: ${SSL_KEY_PATH}
-    ports:
-      - "${FRONTEND_PORT}:443"
+      server.address: ${STORAGE_SERVICE_HOST}
+      server.port: ${STORAGE_SERVICE_2_PORT}
+      server.ssl.key-alias: ${SSL_DOMAIN}
+      server.ssl.key-store: ${SSL_P12_PATH}
+      server.ssl.key-store-password: ${SSL_P12_PASSWORD}
+      spring.application.name: ${STORAGE_SERVICE_2_NAME}
+      spring.datasource.url: ${STORAGE_SERVICE_POSTGRES_URL}
+      spring.datasource.username: ${STORAGE_POSTGRES_USERNAME}
+      spring.datasource.password: ${STORAGE_POSTGRES_PASSWORD}
+      spring.cloud.consul.host: ${STORAGE_CONSUL_NAME}
+      spring.cloud.consul.port: ${STORAGE_CONSUL_PORT}
+      spring.cloud.consul.discovery.instance-id: ${STORAGE_SERVICE_2_ID}
+      spring.cloud.consul.discovery.health-check-url: ${STORAGE_SERVICE_2_HEALTH_CHECK_URL}
+      spring.cloud.consul.discovery.health-check-interval: ${STORAGE_SERVICE_HEALTH_CHECK_INTERVAL}
+    depends_on:
+      - os-storage-postgres
+      - os-storage-consul
     networks:
-      - os-frontend-network
+      - os-storage-network
+    ports:
+      - "${STORAGE_SERVICE_2_PORT}:${STORAGE_SERVICE_2_PORT}"
     volumes:
       - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
+
+#  os-shop-service:
+#    container_name: ${SHOP_SERVICE_NAME}
+#    build:
+#      context: services
+#      dockerfile: shop/Dockerfile
+#    environment:
+#      SHOP_SERVICE_HOST: ${SHOP_SERVICE_HOST}
+#      SHOP_SERVICE_PORT: ${SHOP_SERVICE_PORT}
+#      SHOP_STORAGE_API_BASE_URL: ${SHOP_STORAGE_API_BASE_URL}
+#      SSL_P12_PATH: ${SSL_P12_PATH}
+#      SSL_P12_PASSWORD: ${SSL_P12_PASSWORD}
+#      SSL_DOMAIN: ${SSL_DOMAIN}
+#    ports:
+#      - "${SHOP_SERVICE_PORT}:${SHOP_SERVICE_PORT}"
+#    networks:
+#      - os-shop-network
+#      - os-frontend-network
+#    volumes:
+#      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
+
+#  os-frontend:
+#    container_name: ${FRONTEND_NAME}
+#    build:
+#      context: frontend
+#      args:
+#        REACT_APP_STORAGE_API_URL: ${FRONTEND_STORAGE_API_BASE_URL}
+#        REACT_APP_SHOP_API_URL: ${FRONTEND_SHOP_API_BASE_URL}
+#    environment:
+#      SSL_DOMAIN: ${SSL_DOMAIN}
+#      SSL_CRT_PATH: ${SSL_CRT_PATH}
+#      SSL_KEY_PATH: ${SSL_KEY_PATH}
+#    ports:
+#      - "${FRONTEND_PORT}:443"
+#    networks:
+#      - os-frontend-network
+#    volumes:
+#      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
 
 networks:
   os-storage-network:

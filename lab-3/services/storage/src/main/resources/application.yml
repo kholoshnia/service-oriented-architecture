@@ -1,18 +1,20 @@
 server:
-  address: ${STORAGE_SERVICE_HOST:localhost}
-  port: ${STORAGE_SERVICE_PORT:8080}
+  port: 8080
   ssl:
     key-store-type: PKCS12
-    key-store: ${SSL_P12_PATH:../../ssl/online-shop.com.p12}
-    key-store-password: ${SSL_P12_PASSWORD:123465}
-    key-alias: ${SSL_DOMAIN:online-shop.com}
+    key-store: ../../ssl/online-shop.com.p12
+    key-store-password: 123465
+    key-alias: online-shop.com
 
 spring:
+  application:
+    name: os-storage-service
+
   datasource:
-    url: jdbc:postgresql://${STORAGE_POSTGRES_HOST:localhost}:${STORAGE_POSTGRES_PORT:5432}/${STORAGE_POSTGRES_DATABASE:os-storage-postgres}
+    url: jdbc:postgresql://localhost:5432/os-storage-postgres
     driverClassName: org.postgresql.Driver
-    username: ${STORAGE_POSTGRES_USERNAME:os-storage-postgres}
-    password: ${STORAGE_POSTGRES_PASSWORD:os-storage-postgres}
+    username: os-storage-postgres
+    password: os-storage-postgres
 
   jpa:
     properties:
@@ -29,6 +31,14 @@ spring:
         default-page-size: 10
         max-page-size: 100
         one-indexed-parameters: true
+
+  cloud:
+    consul:
+      discovery:
+        instance-id: ${spring.application.name}:${random.int}
+        health-check-url: https://host.docker.internal:${server.port}/actuator/health
+        health-check-tls-skip-verify: true
+        health-check-interval: 5s
 
 springdoc:
   version: 0.0.1

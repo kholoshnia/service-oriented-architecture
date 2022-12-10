@@ -24,10 +24,13 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
     implementation("org.springdoc:springdoc-openapi-kotlin:1.6.13")
     implementation("org.postgresql:postgresql:42.5.1")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.1")
+
+    implementation("org.springframework.cloud:spring-cloud-starter-consul-discovery:3.1.2")
 
     testImplementation("org.springframework.boot:spring-boot-starter-web")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
