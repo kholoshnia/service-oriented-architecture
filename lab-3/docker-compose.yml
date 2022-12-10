@@ -9,19 +9,20 @@ services:
       POSTGRES_USER: ${STORAGE_POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${STORAGE_POSTGRES_PASSWORD}
       POSTGRES_DATABASE: ${STORAGE_POSTGRES_DATABASE}
-    ports:
-      - "${STORAGE_POSTGRES_PORT}:5432"
     networks:
       - os-storage-network
+    ports:
+      - "${STORAGE_POSTGRES_PORT}:5432"
+
 
   os-storage-consul:
     container_name: ${STORAGE_CONSUL_NAME}
     image: hashicorp/consul:1.11.2
     restart: always
-    ports:
-      - "${STORAGE_CONSUL_UI_PORT}:8500"
     networks:
       - os-storage-network
+    ports:
+      - "${STORAGE_CONSUL_UI_PORT}:8500"
 
   os-storage-service-1:
     container_name: ${STORAGE_SERVICE_1_NAME}
@@ -83,6 +84,31 @@ services:
     ports:
       - "${STORAGE_SERVICE_2_PORT}:${STORAGE_SERVICE_2_PORT}"
     volumes:
+      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
+
+  os-storage-haproxy:
+    container_name: ${STORAGE_HAPROXY_NAME}
+    image: haproxy:2.4.20-alpine
+    restart: always
+    environment:
+      STORAGE_HAPROXY_STATS_PORT: ${STORAGE_HAPROXY_STATS_PORT}
+      STORAGE_HAPROXY_PORT: ${STORAGE_HAPROXY_PORT}
+      STORAGE_SERVICE_1_HOST: ${STORAGE_SERVICE_1_NAME}
+      STORAGE_SERVICE_1_PORT: ${STORAGE_SERVICE_1_PORT}
+      STORAGE_SERVICE_2_HOST: ${STORAGE_SERVICE_2_NAME}
+      STORAGE_SERVICE_2_PORT: ${STORAGE_SERVICE_2_PORT}
+      STORAGE_SERVICE_HEALTH_CHECK_INTERVAL: ${STORAGE_SERVICE_HEALTH_CHECK_INTERVAL}
+      SSL_PEM_PATH: ${SSL_PEM_PATH}
+    depends_on:
+      - os-storage-service-1
+      - os-storage-service-2
+    networks:
+      - os-storage-network
+    ports:
+      - "${STORAGE_HAPROXY_STATS_PORT}:${STORAGE_HAPROXY_STATS_PORT}"
+      - "${STORAGE_HAPROXY_PORT}:${STORAGE_HAPROXY_PORT}"
+    volumes:
+      - ${STORAGE_HAPROXY_CONFIG_HOST_PATH}:/usr/local/etc/haproxy
       - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
 
 #  os-shop-service:
