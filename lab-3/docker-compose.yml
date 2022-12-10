@@ -3,8 +3,8 @@ version: "3.9"
 services:
   os-storage-postgres:
     container_name: ${STORAGE_POSTGRES_NAME}
-    image: postgres:13.4-alpine
     restart: always
+    image: postgres:13.4-alpine
     environment:
       POSTGRES_USER: ${STORAGE_POSTGRES_USERNAME}
       POSTGRES_PASSWORD: ${STORAGE_POSTGRES_PASSWORD}
@@ -16,19 +16,20 @@ services:
 
   os-storage-consul:
     container_name: ${STORAGE_CONSUL_NAME}
-    image: hashicorp/consul:1.11.2
     restart: always
+    image: hashicorp/consul:1.11.2
     networks:
       - os-storage-network
     ports:
       - "${STORAGE_CONSUL_UI_PORT}:8500"
       - "8600:8600"
+      - "8600:8600/udp"
 
   os-storage-service:
+    restart: always
     build:
       context: services
       dockerfile: storage/${STORAGE_SERVICE_DOCKERFILE}
-    restart: always
     environment:
       server.address: ${STORAGE_SERVICE_HOST}
       server.port: ${STORAGE_SERVICE_PORT}
@@ -41,7 +42,6 @@ services:
       spring.datasource.password: ${STORAGE_POSTGRES_PASSWORD}
       spring.cloud.consul.host: ${STORAGE_CONSUL_NAME}
       spring.cloud.consul.port: ${STORAGE_CONSUL_PORT}
-      spring.cloud.consul.discovery.health-check-url: null
       spring.cloud.consul.discovery.health-check-interval: ${STORAGE_SERVICE_HEALTH_CHECK_INTERVAL}
     depends_on:
       - os-storage-postgres
@@ -55,11 +55,13 @@ services:
 
   os-storage-haproxy:
     container_name: ${STORAGE_HAPROXY_NAME}
-    image: haproxy:2.4.20-bullseye
     restart: always
+    image: haproxy:2.4.20-bullseye
     environment:
       STORAGE_HAPROXY_STATS_PORT: ${STORAGE_HAPROXY_STATS_PORT}
       STORAGE_HAPROXY_PORT: ${STORAGE_HAPROXY_PORT}
+      STORAGE_SERVICE_NAME: ${STORAGE_SERVICE_NAME}
+      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
       STORAGE_SERVICE_HEALTH_CHECK_INTERVAL: ${STORAGE_SERVICE_HEALTH_CHECK_INTERVAL}
       STORAGE_SERVICE_INSTANCES: ${STORAGE_SERVICE_INSTANCES}
       STORAGE_CONSUL_HOST: ${STORAGE_CONSUL_NAME}
@@ -69,6 +71,7 @@ services:
       - os-storage-consul
     networks:
       - os-storage-network
+      - os-shop-network
     ports:
       - "${STORAGE_HAPROXY_STATS_PORT}:${STORAGE_HAPROXY_STATS_PORT}"
       - "${STORAGE_HAPROXY_PORT}:${STORAGE_HAPROXY_PORT}"
@@ -76,43 +79,42 @@ services:
       - ${STORAGE_HAPROXY_CONFIG_HOST_PATH}:/usr/local/etc/haproxy
       - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
 
-#  os-shop-service:
-#    container_name: ${SHOP_SERVICE_NAME}
-#    build:
-#      context: services
-#      dockerfile: shop/Dockerfile
-#    environment:
-#      SHOP_SERVICE_HOST: ${SHOP_SERVICE_HOST}
-#      SHOP_SERVICE_PORT: ${SHOP_SERVICE_PORT}
-#      SHOP_STORAGE_API_BASE_URL: ${SHOP_STORAGE_API_BASE_URL}
-#      SSL_P12_PATH: ${SSL_P12_PATH}
-#      SSL_P12_PASSWORD: ${SSL_P12_PASSWORD}
-#      SSL_DOMAIN: ${SSL_DOMAIN}
-#    ports:
-#      - "${SHOP_SERVICE_PORT}:${SHOP_SERVICE_PORT}"
-#    networks:
-#      - os-shop-network
-#      - os-frontend-network
-#    volumes:
-#      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
+  os-shop-service:
+    container_name: ${SHOP_SERVICE_NAME}
+    restart: always
+    build:
+      context: services
+      dockerfile: shop/${SHOP_SERVICE_DOCKERFILE}
+    environment:
+      SHOP_SERVICE_HOST: ${SHOP_SERVICE_HOST}
+      SHOP_SERVICE_PORT: ${SHOP_SERVICE_PORT}
+      SHOP_STORAGE_API_BASE_URL: ${SHOP_STORAGE_API_BASE_URL}
+      SSL_P12_PATH: ${SSL_P12_PATH}
+      SSL_P12_PASSWORD: ${SSL_P12_PASSWORD}
+      SSL_DOMAIN: ${SSL_DOMAIN}
+    ports:
+      - "${SHOP_SERVICE_PORT}:${SHOP_SERVICE_PORT}"
+    networks:
+      - os-shop-network
+    volumes:
+      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
 
-#  os-frontend:
-#    container_name: ${FRONTEND_NAME}
-#    build:
-#      context: frontend
-#      args:
-#        REACT_APP_STORAGE_API_URL: ${FRONTEND_STORAGE_API_BASE_URL}
-#        REACT_APP_SHOP_API_URL: ${FRONTEND_SHOP_API_BASE_URL}
-#    environment:
-#      SSL_DOMAIN: ${SSL_DOMAIN}
-#      SSL_CRT_PATH: ${SSL_CRT_PATH}
-#      SSL_KEY_PATH: ${SSL_KEY_PATH}
-#    ports:
-#      - "${FRONTEND_PORT}:443"
-#    networks:
-#      - os-frontend-network
-#    volumes:
-#      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
+  os-frontend:
+    container_name: ${FRONTEND_NAME}
+    restart: always
+    build:
+      context: frontend
+      args:
+        REACT_APP_STORAGE_API_URL: ${FRONTEND_STORAGE_API_BASE_URL}
+        REACT_APP_SHOP_API_URL: ${FRONTEND_SHOP_API_BASE_URL}
+    environment:
+      SSL_DOMAIN: ${SSL_DOMAIN}
+      SSL_CRT_PATH: ${SSL_CRT_PATH}
+      SSL_KEY_PATH: ${SSL_KEY_PATH}
+    ports:
+      - "${FRONTEND_PORT}:443"
+    volumes:
+      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
 
 networks:
   os-storage-network:
@@ -121,6 +123,3 @@ networks:
   os-shop-network:
     name: os-shop-network
     driver: bridge
-  os-frontend-network:
-    name: os-frontend-network
-    external: true
