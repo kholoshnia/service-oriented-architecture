@@ -1,4 +1,4 @@
-package ru.itmo.soa.lab.shop.config
+package ru.itmo.soa.lab.shop.zuul.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -15,7 +15,6 @@ class SecurityConfig {
         http {
             cors { disable() }
             csrf { disable() }
-//            requiresChannel { secure(anyRequest, requiresSecure) }
             authorizeRequests { authorize(anyRequest, permitAll) }
         }
         return http.build()

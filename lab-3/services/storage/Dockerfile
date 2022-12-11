@@ -14,7 +14,7 @@ COPY build.gradle.kts .
 COPY settings.gradle.kts .
 COPY shared shared
 COPY storage storage
-RUN gradle -p storage bootJar
+RUN gradle -p storage bootJar --no-daemon
 
 FROM adoptopenjdk:11-jre-hotspot
 COPY --from=builder /app/storage/build/libs/storage-0.0.1.jar os-storage-service.jar

@@ -1,19 +1,30 @@
 server:
-  address: ${SHOP_SERVICE_HOST:localhost}
-  port: ${SHOP_SERVICE_PORT:8081}
+  port: 8081
   ssl:
+    enabled: false
     key-store-type: PKCS12
-    key-store: ${SSL_P12_PATH:../../ssl/online-shop.com.p12}
-    key-store-password: ${SSL_P12_PASSWORD:123465}
-    key-alias: ${SSL_DOMAIN:online-shop.com}
+    key-store: ../../ssl/online-shop.com.p12
+    key-store-password: 123465
+    key-alias: online-shop.com
 
 spring:
+  application:
+    name: os-shop-service
+
   data:
     web:
       pageable:
         default-page-size: 10
         max-page-size: 100
         one-indexed-parameters: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+# todo delete
 
 springdoc:
   version: 0.0.1
@@ -27,4 +38,4 @@ springdoc:
     disable-swagger-default-url: true
 
 config:
-  storage-api-base-url: ${SHOP_STORAGE_API_BASE_URL:https://localhost:8080/api/v1}
+  storage-api-base-url: https://localhost:8080/api/v1

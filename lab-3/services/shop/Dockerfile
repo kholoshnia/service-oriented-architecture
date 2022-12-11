@@ -14,7 +14,7 @@ COPY build.gradle.kts .
 COPY settings.gradle.kts .
 COPY shared shared
 COPY shop shop
-RUN gradle -p shop bootJar
+RUN gradle -p shop bootJar --no-daemon
 
 FROM adoptopenjdk:11-jre-hotspot
 COPY --from=builder /app/shop/build/libs/shop-0.0.1.jar os-shop-service.jar

@@ -1,0 +1,23 @@
+server:
+  port: 8060
+
+spring:
+  application:
+    name: os-shop-zuul
+
+  main:
+    allow-bean-definition-overriding: true
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    # todo delete
+    registerWithEureka: true
+    fetchRegistry: true
+
+zuul:
+  routes:
+    os-shop-service:
+      path: /**
+      serviceId: os-shop-service
