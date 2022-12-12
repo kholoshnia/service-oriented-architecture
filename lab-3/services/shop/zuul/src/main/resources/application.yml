@@ -1,20 +1,18 @@
 server:
   port: 8060
+  ssl:
+    key-store-type: PKCS12
+    key-store: ../../../ssl/online-shop.com.p12
+    key-store-password: 123465
+    key-alias: online-shop.com
 
 spring:
   application:
     name: os-shop-zuul
 
-  main:
-    allow-bean-definition-overriding: true
-
 eureka:
   instance:
     prefer-ip-address: true
-  client:
-    # todo delete
-    registerWithEureka: true
-    fetchRegistry: true
 
 zuul:
   routes:

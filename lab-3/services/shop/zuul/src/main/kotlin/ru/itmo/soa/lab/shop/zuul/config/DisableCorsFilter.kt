@@ -1,18 +1,17 @@
-package ru.itmo.soa.lab.shop.config
+package ru.itmo.soa.lab.shop.zuul.config
 
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
-import javax.servlet.Filter
-import javax.servlet.FilterChain
-import javax.servlet.ServletRequest
-import javax.servlet.ServletResponse
+import javax.servlet.*
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-class CorsFilter: Filter {
+class DisableCorsFilter : Filter {
+    override fun init(filterConfig: FilterConfig?) { /* no-op */ }
+
     override fun doFilter(req: ServletRequest, res: ServletResponse, chain: FilterChain) {
         val request = req as HttpServletRequest
         val response = res as HttpServletResponse
@@ -29,4 +28,6 @@ class CorsFilter: Filter {
             response.status = HttpServletResponse.SC_OK
         }
     }
+
+    override fun destroy() { /* no-op */ }
 }

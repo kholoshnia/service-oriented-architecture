@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.springframework.boot") version "2.0.2.RELEASE"
+	id("org.springframework.boot") version "2.0.1.RELEASE"
 	id("io.spring.dependency-management") version "1.0.15.RELEASE"
 	kotlin("jvm") version "1.6.21"
 	kotlin("plugin.spring") version "1.6.21"
@@ -15,16 +15,15 @@ repositories {
 	mavenCentral()
 }
 
-extra["springCloudVersion"] = "Finchley.RELEASE"
+extra["springCloudVersion"] = "Finchley.SR2"
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-actuator")
-	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("javax.xml.bind:jaxb-api:2.3.1")
+	implementation("com.sun.xml.bind:jaxb-impl:2.3.4")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-server")
-	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.security:spring-security-test")
 }
 
 dependencyManagement {

@@ -1,9 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "2.0.2.RELEASE"
+    id("org.springframework.boot") version "2.0.1.RELEASE"
     id("io.spring.dependency-management") version "1.0.13.RELEASE"
-    id("org.springdoc.openapi-gradle-plugin") version "1.4.0"
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.spring") version "1.6.21"
     kotlin("plugin.jpa") version "1.6.21"
@@ -19,7 +18,7 @@ configurations {
     }
 }
 
-extra["springCloudVersion"] = "Finchley.RELEASE"
+extra["springCloudVersion"] = "Finchley.SR2"
 
 dependencies {
     implementation(project(":shared"))
@@ -31,16 +30,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
-    implementation("org.springdoc:springdoc-openapi-kotlin:1.6.13")
 
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
-    implementation("org.springframework.cloud:spring-cloud-starter-netflix-ribbon:2.2.10.RELEASE")
-    // implementation("org.springframework.cloud:spring-cloud-starter-config")
-
-    testImplementation("org.springframework.boot:spring-boot-starter-web")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.assertj:assertj-core")
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-ribbon")
+    implementation("org.springframework.cloud:spring-cloud-starter-config")
 
     implementation("io.ktor:ktor-client:2.1.3")
     implementation("io.ktor:ktor-client-apache:2.1.3")
