@@ -1,83 +1,96 @@
 version: "3.9"
 
 services:
-#  os-storage-postgres:
-#    container_name: ${STORAGE_POSTGRES_NAME}
-#    restart: always
-#    image: postgres:13.4-alpine
-#    environment:
-#      POSTGRES_USER: ${STORAGE_POSTGRES_USERNAME}
-#      POSTGRES_PASSWORD: ${STORAGE_POSTGRES_PASSWORD}
-#      POSTGRES_DATABASE: ${STORAGE_POSTGRES_DATABASE}
-#    networks:
-#      - os-storage-network
-#    ports:
-#      - "${STORAGE_POSTGRES_PORT}:5432"
-#
-#  os-storage-consul:
-#    container_name: ${STORAGE_CONSUL_NAME}
-#    restart: always
-#    image: hashicorp/consul:1.11.2
-#    networks:
-#      - os-storage-network
-#    ports:
-#      - "${STORAGE_CONSUL_UI_PORT}:8500"
-#      - "8600:8600"
-#      - "8600:8600/udp"
-#
-#  os-storage-service:
-#    restart: always
-#    build:
-#      context: services
-#      dockerfile: storage/${STORAGE_SERVICE_DOCKERFILE}
-#    environment:
-#      server.address: ${STORAGE_SERVICE_HOST}
-#      server.port: ${STORAGE_SERVICE_PORT}
-#      server.ssl.key-alias: ${SSL_DOMAIN}
-#      server.ssl.key-store: ${SSL_P12_PATH}
-#      server.ssl.key-store-password: ${SSL_P12_PASSWORD}
-#      spring.application.name: ${STORAGE_SERVICE_NAME}
-#      spring.datasource.url: ${STORAGE_SERVICE_POSTGRES_URL}
-#      spring.datasource.username: ${STORAGE_POSTGRES_USERNAME}
-#      spring.datasource.password: ${STORAGE_POSTGRES_PASSWORD}
-#      spring.cloud.consul.host: ${STORAGE_CONSUL_NAME}
-#      spring.cloud.consul.port: ${STORAGE_CONSUL_PORT}
-#      spring.cloud.consul.discovery.health-check-interval: ${STORAGE_SERVICE_HEALTH_CHECK_INTERVAL}s
-#    depends_on:
-#      - os-storage-postgres
-#      - os-storage-consul
-#    networks:
-#      - os-storage-network
-#    volumes:
-#      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
-#    deploy:
-#      replicas: ${STORAGE_SERVICE_INSTANCES}
-#
-#  os-storage-haproxy:
-#    container_name: ${STORAGE_HAPROXY_NAME}
-#    restart: always
-#    image: haproxy:2.4.20-bullseye
-#    environment:
-#      STORAGE_HAPROXY_STATS_PORT: ${STORAGE_HAPROXY_STATS_PORT}
-#      STORAGE_HAPROXY_PORT: ${STORAGE_HAPROXY_PORT}
-#      STORAGE_SERVICE_NAME: ${STORAGE_SERVICE_NAME}
-#      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
-#      STORAGE_SERVICE_HEALTH_CHECK_INTERVAL: ${STORAGE_SERVICE_HEALTH_CHECK_INTERVAL}s
-#      STORAGE_SERVICE_INSTANCES: ${STORAGE_SERVICE_INSTANCES}
-#      STORAGE_CONSUL_HOST: ${STORAGE_CONSUL_NAME}
-#      STORAGE_CONSUL_DNS_PORT: ${STORAGE_CONSUL_DNS_PORT}
-#      SSL_PEM_PATH: ${SSL_PEM_PATH}
-#    depends_on:
-#      - os-storage-consul
-#    networks:
-#      - os-storage-network
-#      - os-shop-network
-#    ports:
-#      - "${STORAGE_HAPROXY_STATS_PORT}:${STORAGE_HAPROXY_STATS_PORT}"
-#      - "${STORAGE_HAPROXY_PORT}:${STORAGE_HAPROXY_PORT}"
-#    volumes:
-#      - ${STORAGE_HAPROXY_CONFIG_HOST_PATH}:/usr/local/etc/haproxy
-#      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
+  os-storage-postgres:
+    container_name: ${STORAGE_POSTGRES_NAME}
+    restart: always
+    image: postgres:13.4-alpine
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-U", "${STORAGE_POSTGRES_USERNAME}", "-d", "${STORAGE_POSTGRES_DATABASE}" ]
+      interval: 5s
+      timeout: 2s
+      retries: 100
+    environment:
+      POSTGRES_USER: ${STORAGE_POSTGRES_USERNAME}
+      POSTGRES_PASSWORD: ${STORAGE_POSTGRES_PASSWORD}
+      POSTGRES_DATABASE: ${STORAGE_POSTGRES_DATABASE}
+    networks:
+      - os-storage-network
+    ports:
+      - "${STORAGE_POSTGRES_PORT}:5432"
+
+  os-storage-consul:
+    container_name: ${STORAGE_CONSUL_NAME}
+    restart: always
+    image: hashicorp/consul:1.11.2
+    healthcheck:
+      test: [ "CMD", "curl", "-X", "GET", "localhost:8500/v1/status/leader" ]
+      interval: 5s
+      timeout: 2s
+      retries: 100
+    networks:
+      - os-storage-network
+    ports:
+      - "${STORAGE_CONSUL_UI_PORT}:8500"
+      - "8600:8600"
+      - "8600:8600/udp"
+
+  os-storage-service:
+    restart: always
+    build:
+      context: services
+      dockerfile: storage/${STORAGE_SERVICE_DOCKERFILE}
+    environment:
+      server.address: ${STORAGE_SERVICE_HOST}
+      server.port: ${STORAGE_SERVICE_PORT}
+      server.ssl.key-alias: ${SSL_DOMAIN}
+      server.ssl.key-store: ${SSL_P12_PATH}
+      server.ssl.key-store-password: ${SSL_P12_PASSWORD}
+      spring.application.name: ${STORAGE_SERVICE_NAME}
+      spring.datasource.url: ${STORAGE_SERVICE_POSTGRES_URL}
+      spring.datasource.username: ${STORAGE_POSTGRES_USERNAME}
+      spring.datasource.password: ${STORAGE_POSTGRES_PASSWORD}
+      spring.cloud.consul.host: ${STORAGE_CONSUL_NAME}
+      spring.cloud.consul.port: ${STORAGE_CONSUL_PORT}
+      spring.cloud.consul.discovery.health-check-interval: ${STORAGE_SERVICE_HEALTH_CHECK_INTERVAL}s
+    depends_on:
+      os-storage-postgres:
+        condition: service_healthy
+      os-storage-consul:
+        condition: service_healthy
+    networks:
+      - os-storage-network
+    volumes:
+      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
+    deploy:
+      replicas: ${STORAGE_SERVICE_INSTANCES}
+
+  os-storage-haproxy:
+    container_name: ${STORAGE_HAPROXY_NAME}
+    restart: always
+    image: haproxy:2.4.20-bullseye
+    environment:
+      STORAGE_HAPROXY_STATS_PORT: ${STORAGE_HAPROXY_STATS_PORT}
+      STORAGE_HAPROXY_PORT: ${STORAGE_HAPROXY_PORT}
+      STORAGE_SERVICE_NAME: ${STORAGE_SERVICE_NAME}
+      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
+      STORAGE_SERVICE_HEALTH_CHECK_INTERVAL: ${STORAGE_SERVICE_HEALTH_CHECK_INTERVAL}s
+      STORAGE_SERVICE_INSTANCES: ${STORAGE_SERVICE_INSTANCES}
+      STORAGE_CONSUL_HOST: ${STORAGE_CONSUL_NAME}
+      STORAGE_CONSUL_DNS_PORT: ${STORAGE_CONSUL_DNS_PORT}
+      SSL_PEM_PATH: ${SSL_PEM_PATH}
+    depends_on:
+      os-storage-consul:
+        condition: service_healthy
+    networks:
+      - os-storage-network
+      - os-shop-network
+    ports:
+      - "${STORAGE_HAPROXY_STATS_PORT}:${STORAGE_HAPROXY_STATS_PORT}"
+      - "${STORAGE_HAPROXY_PORT}:${STORAGE_HAPROXY_PORT}"
+    volumes:
+      - ${STORAGE_HAPROXY_CONFIG_HOST_PATH}:/usr/local/etc/haproxy
+      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
 
   os-shop-eureka:
     container_name: ${SHOP_EUREKA_NAME}
@@ -85,6 +98,11 @@ services:
     build:
       context: services/shop/eureka
       dockerfile: ${SHOP_EUREKA_DOCKERFILE}
+    healthcheck:
+      test: "curl --fail --silent localhost:${SHOP_EUREKA_PORT}/actuator/health | grep UP || exit 1"
+      interval: 5s
+      timeout: 2s
+      retries: 100
     environment:
       server.address: ${SHOP_EUREKA_HOST}
       server.port: ${SHOP_EUREKA_PORT}
@@ -95,6 +113,25 @@ services:
       - os-shop-network
     ports:
       - "${SHOP_EUREKA_PORT}:${SHOP_EUREKA_PORT}"
+
+  os-shop-config:
+    container_name: ${SHOP_CONFIG_NAME}
+    restart: always
+    build:
+      context: services/shop/config
+      dockerfile: ${SHOP_CONFIG_DOCKERFILE}
+    environment:
+      server.address: ${SHOP_CONFIG_HOST}
+      server.port: ${SHOP_CONFIG_PORT}
+      spring.application.name: ${SHOP_CONFIG_NAME}
+      eureka.client.service-url.defaultZone: ${SHOP_EUREKA_DEFAULT_ZONE_URL}
+    depends_on:
+      os-shop-eureka:
+        condition: service_healthy
+    networks:
+      - os-shop-network
+    ports:
+      - "${SHOP_CONFIG_PORT}:${SHOP_CONFIG_PORT}"
 
   os-shop-service:
     restart: always
@@ -112,13 +149,14 @@ services:
       eureka.client.registry-fetch-interval-seconds: ${SHOP_SERVICE_HEALTH_CHECK_INTERVAL}
       config.storage-api-base-url: ${SHOP_STORAGE_API_BASE_URL}
     depends_on:
-      - os-shop-eureka
+      os-shop-eureka:
+        condition: service_healthy
     networks:
       - os-shop-network
     volumes:
       - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
     deploy:
-      replicas: 1
+      replicas: ${SHOP_SERVICE_INSTANCES}
 
   os-shop-zuul:
     container_name: ${SHOP_ZUUL_NAME}
@@ -129,42 +167,39 @@ services:
     environment:
       server.address: ${SHOP_ZUUL_HOST}
       server.port: ${SHOP_ZUUL_PORT}
+      server.ssl.key-alias: ${SSL_DOMAIN}
+      server.ssl.key-store: ${SSL_P12_PATH}
+      server.ssl.key-store-password: ${SSL_P12_PASSWORD}
       spring.application.name: ${SHOP_ZUUL_NAME}
       eureka.client.service-url.defaultZone: ${SHOP_EUREKA_DEFAULT_ZONE_URL}
+      eureka.client.registry-fetch-interval-seconds: ${SHOP_SERVICE_HEALTH_CHECK_INTERVAL}
+      zuul.routes.os-shop-service.serviceId: ${SHOP_SERVICE_NAME}
+    depends_on:
+      os-shop-eureka:
+        condition: service_healthy
     networks:
       - os-shop-network
     ports:
       - "${SHOP_ZUUL_PORT}:${SHOP_ZUUL_PORT}"
-rabbitmq:3.9.26-alpine
-#healthcheck:
-#  test: curl -m 5 --silent --fail --request GET http://localhost:8080/actuator/health | jq --exit-status -n 'inputs | if has("status") then .status=="UP" else false end' > /dev/null || exit 1
-#  interval: 10s
-#  timeout: 2s
-#  retries: 10
+    volumes:
+      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
 
-#healthcheck:
-#  test: "curl --fail --silent localhost:8081/actuator/health | grep UP || exit 1"
-#  interval: 20s
-#  timeout: 5s
-#  retries: 5
-#  start_period: 40s
-
-#  os-frontend:
-#    container_name: ${FRONTEND_NAME}
-#    restart: always
-#    build:
-#      context: frontend
-#      args:
-#        REACT_APP_STORAGE_API_URL: ${FRONTEND_STORAGE_API_BASE_URL}
-#        REACT_APP_SHOP_API_URL: ${FRONTEND_SHOP_API_BASE_URL}
-#    environment:
-#      SSL_DOMAIN: ${SSL_DOMAIN}
-#      SSL_CRT_PATH: ${SSL_CRT_PATH}
-#      SSL_KEY_PATH: ${SSL_KEY_PATH}
-#    ports:
-#      - "${FRONTEND_PORT}:443"
-#    volumes:
-#      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
+  os-frontend:
+    container_name: ${FRONTEND_NAME}
+    restart: always
+    build:
+      context: frontend
+      args:
+        REACT_APP_STORAGE_API_URL: ${FRONTEND_STORAGE_API_BASE_URL}
+        REACT_APP_SHOP_API_URL: ${FRONTEND_SHOP_API_BASE_URL}
+    environment:
+      SSL_DOMAIN: ${SSL_DOMAIN}
+      SSL_CRT_PATH: ${SSL_CRT_PATH}
+      SSL_KEY_PATH: ${SSL_KEY_PATH}
+    ports:
+      - "${FRONTEND_PORT}:443"
+    volumes:
+      - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
 
 networks:
   os-storage-network:
