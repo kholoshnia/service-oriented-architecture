@@ -1,0 +1,64 @@
+server:
+  port: 8080
+  ssl:
+    key-store-type: PKCS12
+    key-store: ../../ssl/online-shop.com.p12
+    key-store-password: 123465
+    key-alias: online-shop.com
+
+spring:
+  application:
+    name: os-storage-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/os-storage-postgres
+    driverClassName: org.postgresql.Driver
+    username: os-storage-postgres
+    password: os-storage-postgres
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+    hibernate:
+      ddlAuto: update
+
+  data:
+    rest:
+      default-media-type: application/xml
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 100
+        one-indexed-parameters: true
+
+  cloud:
+    consul:
+      discovery:
+        scheme: https
+        prefer-ip-address: true
+        instance-id: ${spring.application.name}:${random.value}
+        health-check-tls-skip-verify: true
+        health-check-interval: 5s
+
+springdoc:
+  version: 0.0.1
+  default-consumes-media-type: application/xml
+  default-produces-media-type: application/xml
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui
+    supported-submit-methods: [ ]
+    disable-swagger-default-url: true
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  cloud:
+    consul:
+      discovery:
+        health-check-url: https://host.docker.internal:${server.port}/actuator/health

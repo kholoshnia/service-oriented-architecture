@@ -1,0 +1,8 @@
+.product-info-modal {
+  &__content {
+    > div {
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}

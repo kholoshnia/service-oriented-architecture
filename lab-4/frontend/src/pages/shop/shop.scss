@@ -1,0 +1,40 @@
+.shop {
+  &__filter-by {
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+
+    @media (max-width: 720px) {
+      flex-direction: column;
+      align-items: stretch;
+
+      > div:not(:last-child) {
+        margin-bottom: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+      }
+    }
+  }
+
+  &__select,
+  &__manufacturer-input,
+  &__unit-of-measure-select {
+    margin-left: 1rem;
+  }
+
+  &__select {
+    width: 145px;
+  }
+
+  &__manufacturer-input {
+    width: auto;
+  }
+
+  &__error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: red;
+  }
+}

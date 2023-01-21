@@ -1,0 +1,38 @@
+server:
+  port: 8081
+  ssl:
+    enabled: false
+    key-store-type: PKCS12
+    key-store: ../../ssl/online-shop.com.p12
+    key-store-password: 123465
+    key-alias: online-shop.com
+
+spring:
+  application:
+    name: os-shop-service
+
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 100
+        one-indexed-parameters: true
+
+  cloud:
+    config:
+      discovery:
+        enabled: true
+        service-id: os-shop-config
+      fail-fast: true
+      retry:
+        initial-interval: 2000
+        max-interval: 10000
+        multiplier: 2
+        max-attempts: 10
+
+eureka:
+  instance:
+    prefer-ip-address: true
+
+config:
+  storage-api-base-url: https://localhost:8080/api/v1
