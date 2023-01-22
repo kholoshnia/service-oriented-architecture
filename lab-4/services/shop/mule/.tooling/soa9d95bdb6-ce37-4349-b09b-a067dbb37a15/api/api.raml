@@ -1,0 +1,228 @@
+#%RAML 1.0
+types:
+  CoordinatesDto:
+    type: object
+    properties:
+      x:
+        type: number
+        maximum: 492
+        format: int32
+        required: true
+      y:
+        type: number
+        minimum: -139
+        format: int32
+        required: true
+  OrganizationDto:
+    type: object
+    properties:
+      id:
+        type: number
+        minimum: 1
+        format: int32
+        required: true
+      name:
+        type: string
+        required: true
+      fullName?:
+        type: string
+        minLength: 0
+        maxLength: 1317
+      annualTurnover?:
+        type: number
+        minimum: 1
+        format: int32
+      employeesCount?:
+        type: number
+        minimum: 1
+        format: int64
+  ProductDto:
+    type: object
+    properties:
+      id:
+        type: number
+        minimum: 1
+        format: int32
+        required: true
+      creationDate:
+        type: date-only
+        required: true
+      name:
+        type: string
+        required: true
+      coordinates: CoordinatesDto
+      price:
+        type: number
+        minimum: 1
+        format: int32
+        required: true
+      partNumber?:
+        type: string
+        minLength: 25
+        maxLength: 48
+      manufactureCost:
+        type: number
+        format: float
+        required: true
+      unitOfMeasure?:
+        enum:
+          - KILOGRAMS
+          - CENTIMETERS
+          - PCS
+          - MILLILITERS
+          - MILLIGRAMS
+        type: string
+      manufacturer?: OrganizationDto
+  PageDtoProductDto:
+    type: object
+    properties:
+      page:
+        type: number
+        format: int32
+        required: true
+      size:
+        type: number
+        format: int32
+        required: true
+      total:
+        type: number
+        format: int32
+        required: true
+      data:
+        type: array
+        items: ProductDto
+        required: true
+annotationTypes:
+  amf-serverDescription:
+    type: any
+  amf-exclusiveMinimum:
+    type: any
+  amf-binding:
+    type: any
+  amf-pattern:
+    type: any
+  amf-payloads:
+    type: any
+  amf-exclusiveMaximum:
+    type: any
+  amf-consumes:
+    type: any
+  amf-additionalProperties:
+    type: any
+  amf-or:
+    type: any
+  amf-url:
+    type: any
+  amf-externalDocs:
+    type: any
+  amf-flow:
+    type: any
+  amf-oasDeprecated:
+    type: any
+  amf-contact:
+    type: any
+  amf-multipleOf:
+    type: any
+  amf-xor:
+    type: any
+  amf-not:
+    type: any
+  amf-callbacks:
+    type: any
+  amf-produces:
+    type: any
+  amf-format:
+    type: any
+  amf-license:
+    type: any
+  amf-summary:
+    type: any
+  amf-responses:
+    type: any
+  amf-maximum:
+    type: any
+  amf-tags:
+    type: any
+  amf-dependencies:
+    type: any
+  amf-readOnly:
+    type: any
+  amf-tuple:
+    type: any
+  amf-examples:
+    type: any
+  amf-collectionFormat:
+    type: any
+  amf-termsOfService:
+    type: any
+  amf-servers:
+    type: any
+  amf-xone:
+    type: any
+  amf-defaultResponse:
+    type: any
+  amf-baseUriParameters:
+    type: any
+  amf-parameters:
+    type: any
+  amf-minimum:
+    type: any
+  amf-recursive:
+    type: any
+  amf-and:
+    type: any
+title: Online shop API
+baseUri: http://localhost:8081/ebay
+(amf-serverDescription): Shop service base URL
+description: Online shop API provides access to the actions with the shop.
+version: 0.0.1
+(amf-tags):
+  -
+    name: Filters
+    description: Product filters
+/api/v1/filter/manufacturer/{manufacturerId}:
+  get:
+    displayName: filterByManufacturer
+    (amf-summary): Select all products of a given manufacturer
+    (amf-tags):
+      - Filters
+    responses:
+      "200":
+        description: Products filtered successfully
+        body:
+          application/xml: PageDtoProductDto
+      "400":
+        description: Invalid id provided
+        body:
+          text/plain:
+            type: string
+  uriParameters:
+    manufacturerId:
+      type: number
+      minimum: 1
+      format: int32
+/api/v1/filter/unit-of-measure/{unitOfMeasure}:
+  get:
+    displayName: filterByUnitOfMeasure
+    (amf-summary): Select all products whose characteristics are determined by the given units of measurement
+    (amf-tags):
+      - Filters
+    responses:
+      "200":
+        description: Products filtered successfully
+        body:
+          application/xml: PageDtoProductDto
+      "400":
+        description: Invalid unit of measure provided
+        body:
+          text/plain:
+            type: string
+  uriParameters:
+    unitOfMeasure:
+      enum:
+        - KILOGRAMS
+        - CENTIMETERS
+        - PCS
+        - MILLILITERS
+        - MILLIGRAMS
+      type: string

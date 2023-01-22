@@ -18,11 +18,11 @@ class ShopController(
     fun filterProductsByManufacturer(
         request: HttpServletRequest,
         @PathVariable manufacturerId: Int,
-    ) = shopService.getProductsByManufacturer(manufacturerId, request.queryString)
+    ) = shopService.getProductsByManufacturerResponse(manufacturerId, request.queryString)
 
     @GetMapping("/filter/unit-of-measure/{unitOfMeasure}")
-    fun getProductsByUnitOfMeasure(
+    fun filterProductsByUnitOfMeasure(
         request: HttpServletRequest,
         @PathVariable unitOfMeasure: UnitOfMeasure,
-    ) = shopService.getProductsByUnitOfMeasure(unitOfMeasure, request.queryString)
+    ) = shopService.getProductsByUnitOfMeasureResponse(unitOfMeasure, request.queryString)
 }

@@ -6,6 +6,8 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.logging.*
 import io.ktor.client.request.*
 import io.ktor.http.*
+import io.ktor.util.*
+import kotlinx.coroutines.runBlocking
 import org.apache.http.conn.ssl.NoopHostnameVerifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
@@ -32,25 +34,29 @@ class StorageClient(
         }
     }
 
-    suspend fun getProductsByManufacturer(
+    fun getProductsByManufacturer(
         manufacturerId: Int,
-        queryString: String?,
-    ) = client.get {
-        url {
-            appendPathSegments("products")
-            parameters["manufacturerId"] = manufacturerId.toString()
-            queryString?.let { parameters.appendAll(parseQueryString(it)) }
+        queryParams: Parameters? = Parameters.Empty
+    ) = runBlocking {
+        client.get {
+            url {
+                appendPathSegments("products")
+                parameters["manufacturerId"] = manufacturerId.toString()
+                queryParams?.let { parameters.appendAll(it) }
+            }
         }
     }
 
-    suspend fun getProductsByUnitOfMeasure(
+    fun getProductsByUnitOfMeasure(
         unitOfMeasure: UnitOfMeasure,
-        queryString: String?,
-    ) = client.get {
-        url {
-            appendPathSegments("products")
-            parameters["unitOfMeasure"] = unitOfMeasure.toString()
-            queryString?.let { parameters.appendAll(parseQueryString(it)) }
+        queryParams: Parameters? = Parameters.Empty
+    ) = runBlocking {
+        client.get {
+            url {
+                appendPathSegments("products")
+                parameters["unitOfMeasure"] = unitOfMeasure.toString()
+                queryParams?.let { parameters.appendAll(it) }
+            }
         }
     }
 }
