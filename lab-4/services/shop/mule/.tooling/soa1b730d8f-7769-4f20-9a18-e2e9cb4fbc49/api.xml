@@ -8,16 +8,17 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
     <wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="3af6d8c2-f61f-4d73-a7ab-ed33465fbfbe" >
 		<wsc:connection wsdlLocation="http://localhost:8081/ws/shop.wsdl" service="ShopPortService" port="ShopPortSoap11" address="http://localhost:8081/ws" >
 			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
+			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
 		</wsc:connection>
 	</wsc:config>
 	<flow name="api-main">
-        <http:listener config-ref="api-httpListenerConfig" path="/api/*">
+        <http:listener config-ref="api-httpListenerConfig" path="/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">
-                <http:body>#[payload]</http:body>
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
         <apikit:router config-ref="api-config" />
@@ -131,19 +132,107 @@ output application/json
     </flow>
     <flow name="get:\api\v1\filter\manufacturer\(manufacturerId):api-config">
         <ee:transform>
-            <ee:variables>
-                <ee:set-variable variableName="manufacturerId">attributes.uriParams.'manufacturerId'</ee:set-variable>
+            <ee:message >
+				<ee:set-payload ><![CDATA[output text/xml skipNullOn="everywhere"
+ns ns0 /ru/itmo/soa/lab/shop/soap
+---
+{
+	ns0#getProductsByManufacturerRequest: {
+		arg0: {
+			page: attributes.queryParams.page,
+			size: attributes.queryParams.size,
+			sort: attributes.queryParams.sort,
+			manufacturerId: attributes.uriParams.manufacturerId
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+                <ee:set-variable variableName="manufacturerId"><![CDATA[attributes.uriParams.'manufacturerId']]></ee:set-variable>
             </ee:variables>
         </ee:transform>
-        <wsc:consume operation="" doc:name="Consume" doc:id="85a2bfdb-0041-4bc5-8cbd-9b14a62456c7" />
+        <wsc:consume doc:name="Consume" doc:id="85a2bfdb-0041-4bc5-8cbd-9b14a62456c7" config-ref="Web_Service_Consumer_Config" operation="getProductsByManufacturer"/>
+		<ee:transform doc:name="Transform Message" doc:id="dae2639f-c0c2-4954-9797-207d4c6add40" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 /ru/itmo/soa/lab/shop/soap
+---
+{
+	total: payload.body.ns0#getProductsByManufacturerResponse.ns0#total default 0,
+	size: payload.body.ns0#getProductsByManufacturerResponse.ns0#size default 0,
+	data: payload.body.ns0#getProductsByManufacturerResponse.*ns0#data map ( datum , indexOfDatum ) -> {
+	},
+	page: payload.body.ns0#getProductsByManufacturerResponse.ns0#page default 0
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
 		<logger level="INFO" message="get:\api\v1\filter\manufacturer\(manufacturerId):api-config" />
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="08f83902-0add-470c-9edf-bb2d48ffdfa4" >
+				<set-variable value="404" doc:name="Set Variable" doc:id="eca1320b-f77e-4718-9e70-289f5c2117d4" variableName="httpStatus"/>
+				<ee:transform doc:name="Transform Message" doc:id="5b7e52ae-a3ca-4dd1-8a2e-1da3a4132b9a" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output text/plain
+---
+error.detailedDescription]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
     </flow>
     <flow name="get:\api\v1\filter\unit-of-measure\(unitOfMeasure):api-config">
         <ee:transform>
-            <ee:variables>
-                <ee:set-variable variableName="unitOfMeasure">attributes.uriParams.'unitOfMeasure'</ee:set-variable>
+            <ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output text/xml skipNullOn="everywhere"
+ns ns0 /ru/itmo/soa/lab/shop/soap
+---
+{
+	ns0#getProductsByUnitOfMeasureRequest: {
+		arg0: {
+			page: attributes.queryParams.page,
+			size: attributes.queryParams.size,
+			sort: attributes.queryParams.sort,
+			unitOfMeasure: attributes.uriParams.unitOfMeasure
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+                <ee:set-variable variableName="unitOfMeasure"><![CDATA[attributes.uriParams.'unitOfMeasure']]></ee:set-variable>
             </ee:variables>
         </ee:transform>
-        <logger level="INFO" message="get:\api\v1\filter\unit-of-measure\(unitOfMeasure):api-config" />
+        <wsc:consume operation="getProductsByUnitOfMeasure" doc:name="Consume" doc:id="5dbf7cef-3d71-49ec-b2fe-11bcc39ddec1" config-ref="Web_Service_Consumer_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="9925828f-058b-46cb-97c3-b3af80bdbca1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 /ru/itmo/soa/lab/shop/soap
+---
+{
+	total: payload.body.ns0#getProductsByUnitOfMeasureResponse.ns0#total default 0,
+	size: payload.body.ns0#getProductsByUnitOfMeasureResponse.ns0#size default 0,
+	data: payload.body.ns0#getProductsByUnitOfMeasureResponse.*ns0#data map ( datum , indexOfDatum ) -> {
+	},
+	page: payload.body.ns0#getProductsByUnitOfMeasureResponse.ns0#page default 0
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" message="get:\api\v1\filter\unit-of-measure\(unitOfMeasure):api-config" />
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="4b984e53-a825-4157-803e-ba71bf295401" >
+				<set-variable value="404" doc:name="Set Variable" doc:id="cb415aef-35ca-4a12-9186-b628864b3692" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="ccc05f0e-1382-470b-9e3d-70fdad2210c0" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output text/plain
+---
+error.detailedDescription]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
     </flow>
 </mule>

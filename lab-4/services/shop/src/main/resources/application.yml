@@ -35,7 +35,7 @@ eureka:
     prefer-ip-address: true
 
 config:
-  storage-api-base-url: https://localhost:8080/api/v1
+  storage-api-base-url: https://localhost:8443/api/v1
 
 logging:
   level:

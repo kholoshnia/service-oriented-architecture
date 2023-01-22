@@ -11,12 +11,13 @@ import org.springframework.ws.transport.http.MessageDispatcherServlet
 import org.springframework.ws.wsdl.wsdl11.DefaultWsdl11Definition
 import org.springframework.xml.xsd.SimpleXsdSchema
 import org.springframework.xml.xsd.XsdSchema
+import ru.itmo.soa.lab.shop.soap.ObjectFactory
 
 @EnableWs
 @Configuration
 class WebServiceConfig : WsConfigurerAdapter() {
     companion object {
-        const val NAMESPACE_URI = "http://itmo.ru/soa/lab/shop/soap"
+        const val NAMESPACE_URI = "/ru/itmo/soa/lab/shop/soap"
     }
 
     @Bean
@@ -41,4 +42,7 @@ class WebServiceConfig : WsConfigurerAdapter() {
     fun shopSchema(): XsdSchema {
         return SimpleXsdSchema(ClassPathResource("shop.xsd"))
     }
+
+    @Bean("shopObjectFactory")
+    fun shopObjectFactory() = ObjectFactory()
 }

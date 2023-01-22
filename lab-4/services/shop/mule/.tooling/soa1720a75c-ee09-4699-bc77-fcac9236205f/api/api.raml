@@ -186,6 +186,25 @@ version: 0.0.1
     (amf-summary): Select all products of a given manufacturer
     (amf-tags):
       - Filters
+    queryParameters:
+      page:
+        description: One-based page index (1..N)
+        required: false
+        default: 1
+        type: integer
+        minimum: 0
+      size:
+        description: The size of the page to be returned
+        required: false
+        default: 10
+        type: integer
+        minimum: 1
+      sort:
+        description: "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        type: array
+        items:
+          type: string
     responses:
       "200":
         description: Products filtered successfully
@@ -207,6 +226,25 @@ version: 0.0.1
     (amf-summary): Select all products whose characteristics are determined by the given units of measurement
     (amf-tags):
       - Filters
+    queryParameters:
+      page:
+        description: One-based page index (1..N)
+        required: false
+        default: 1
+        type: integer
+        minimum: 0
+      size:
+        description: The size of the page to be returned
+        required: false
+        default: 10
+        type: integer
+        minimum: 1
+      sort:
+        description: "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported."
+        required: false
+        type: array
+        items:
+          type: string
     responses:
       "200":
         description: Products filtered successfully
