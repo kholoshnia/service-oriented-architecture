@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+    <http:listener-config name="api-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8091" tlsContext="os-ssl" protocol="HTTPS">
+		</http:listener-connection>
+    </http:listener-config>
+    <apikit:config name="api-config" api="api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+	<wsc:config name="shop-soap" doc:name="Web Service Consumer Config" doc:id="7a6fd54a-9e7c-4035-aa0c-562bb5505a11" >
+		<wsc:connection wsdlLocation="https://localhost:9443/ws/shop.wsdl" service="ShopPortService" port="ShopPortSoap11" address="http://localhost:8081/ws" >
+			<wsc:custom-transport-configuration >
+				<wsc:http-transport-configuration requesterConfig="os-https" />
+			</wsc:custom-transport-configuration>
+		</wsc:connection>
+	</wsc:config>
+	<tls:context name="os-ssl" doc:name="TLS Context" doc:id="567f5f81-2439-456a-ae1f-0eff57ef5734" >
+		<tls:trust-store path="/Users/kholoshnia/Developer/itmo/service-oriented-architecture/lab-4/ssl/online-shop.com.p12" password="123465" type="pkcs12" insecure="true" />
+		<tls:key-store type="pkcs12" path="/Users/kholoshnia/Developer/itmo/service-oriented-architecture/lab-4/ssl/online-shop.com.p12" alias="online-shop.com" keyPassword="123465" password="123465" />
+	</tls:context>
+	<http:request-config name="os-https" doc:name="HTTP Request configuration" doc:id="ad178f2d-665c-4720-972b-f1b8d661e075" >
+		<http:request-connection protocol="HTTPS" tlsContext="os-ssl">
+		</http:request-connection>
+	</http:request-config>
+	<flow name="api-main">
+        <http:listener config-ref="api-httpListenerConfig" path="/ebay/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:BAD_REQUEST">
+                <ee:transform>
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Bad request"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">400</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform>
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:METHOD_NOT_ALLOWED">
+                <ee:transform>
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Method not allowed"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">405</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_ACCEPTABLE">
+                <ee:transform>
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not acceptable"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">406</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+                <ee:transform>
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Unsupported media type"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">415</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+            <on-error-propagate type="APIKIT:NOT_IMPLEMENTED">
+                <ee:transform>
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Not Implemented"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">501</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="api-console">
+        <http:listener config-ref="api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="api-config" />
+        <error-handler>
+            <on-error-propagate type="APIKIT:NOT_FOUND">
+                <ee:transform>
+                    <ee:message>
+                        <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{message: "Resource not found"}]]></ee:set-payload>
+                    </ee:message>
+                    <ee:variables>
+                        <ee:set-variable variableName="httpStatus">404</ee:set-variable>
+                    </ee:variables>
+                </ee:transform>
+            </on-error-propagate>
+        </error-handler>
+    </flow>
+    <flow name="get:\api\v1\filter\manufacturer\(manufacturerId):api-config">
+		<ee:transform doc:name="Transform Message" doc:id="4043d4ba-f3e8-43bc-a276-060e978aeb0e" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output text/xml skipNullOn = "everywhere"
+ns ns0 /ru/itmo/soa/lab/shop/soap
+---
+{
+	ns0#getProductsByManufacturerRequest: {
+		ns0#page: attributes.queryParams.page,
+		ns0#size: attributes.queryParams.size,
+		(attributes.queryParams.sort map ( sort , indexOfSort ) -> {
+			ns0#sort: sort
+		}),
+		ns0#manufacturerId: attributes.uriParams.manufacturerId
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume doc:name="Consume" doc:id="a5a56fd9-33f0-4ad7-a058-ab8326453314" config-ref="shop-soap" operation="getProductsByManufacturer"/>
+		<ee:transform doc:name="Transform Message" doc:id="fa216fa0-7f3f-48b7-99c0-9b78029b4b93" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml skipNullOn = "everywhere"
+ns ns0 /ru/itmo/soa/lab/shop/soap
+---
+page: {
+	page: payload.body.ns0#getProductsByManufacturerResponse.ns0#page default 0,
+	size: payload.body.ns0#getProductsByManufacturerResponse.ns0#size default 0,
+	total: payload.body.ns0#getProductsByManufacturerResponse.ns0#total default 0,
+	data: payload.body.ns0#getProductsByManufacturerResponse.*ns0#data map ( datum , indexOfDatum ) -> {
+		data: {
+			unitOfMeasure: datum.ns0#unitOfMeasure,
+			price: datum.ns0#price default 0,
+			name: datum.ns0#name default "",
+			manufactureCost: datum.ns0#manufactureCost default 0,
+			partNumber: datum.ns0#partNumber,
+			id: datum.ns0#id default 0,
+			creationDate: datum.ns0#creationDate as String default "",
+			manufacturer: {
+				employeesCount: datum.ns0#manufacturer.ns0#employeesCount,
+				name: datum.ns0#manufacturer.ns0#name,
+				coordinates: {
+					x: datum.ns0#manufacturer.ns0#coordinates.ns0#x,
+					y: datum.ns0#manufacturer.ns0#coordinates.ns0#y
+				},
+				fullName: datum.ns0#manufacturer.ns0#fullName,
+				annualTurnover: datum.ns0#manufacturer.ns0#annualTurnover,
+				id: datum.ns0#manufacturer.ns0#id
+			}
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="08f83902-0add-470c-9edf-bb2d48ffdfa4" >
+				<set-variable value="404" doc:name="Set Variable" doc:id="eca1320b-f77e-4718-9e70-289f5c2117d4" variableName="httpStatus"/>
+				<ee:transform doc:name="Transform Message" doc:id="5b7e52ae-a3ca-4dd1-8a2e-1da3a4132b9a" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output text/plain
+---
+error.detailedDescription]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+    </flow>
+    <flow name="get:\api\v1\filter\unit-of-measure\(unitOfMeasure):api-config">
+        <ee:transform>
+            <ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output text/xml skipNullOn = "everywhere"
+ns ns0 /ru/itmo/soa/lab/shop/soap
+---
+{
+	ns0#getProductsByUnitOfMeasureRequest: {
+		ns0#page: attributes.queryParams.page,
+		ns0#size: attributes.queryParams.size,
+		(attributes.queryParams.sort map ( sort , indexOfSort ) -> {
+			ns0#sort: sort
+		}),
+		ns0#unitOfMeasure: attributes.uriParams.unitOfMeasure
+	}
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+                <ee:set-variable variableName="unitOfMeasure"><![CDATA[attributes.uriParams.'unitOfMeasure']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <wsc:consume operation="getProductsByUnitOfMeasure" doc:name="Consume" doc:id="5dbf7cef-3d71-49ec-b2fe-11bcc39ddec1" config-ref="shop-soap"/>
+		<ee:transform doc:name="Transform Message" doc:id="9925828f-058b-46cb-97c3-b3af80bdbca1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml skipNullOn = "everywhere"
+ns ns0 /ru/itmo/soa/lab/shop/soap
+---
+page: {
+	page: payload.body.ns0#getProductsByUnitOfMeasureResponse.ns0#page default 0,
+	size: payload.body.ns0#getProductsByUnitOfMeasureResponse.ns0#size default 0,
+	total: payload.body.ns0#getProductsByUnitOfMeasureResponse.ns0#total default 0,
+	data: payload.body.ns0#getProductsByUnitOfMeasureResponse.*ns0#data map ( datum , indexOfDatum ) -> {
+		data: {
+			unitOfMeasure: datum.ns0#unitOfMeasure,
+			price: datum.ns0#price default 0,
+			name: datum.ns0#name default "",
+			manufactureCost: datum.ns0#manufactureCost default 0,
+			partNumber: datum.ns0#partNumber,
+			id: datum.ns0#id default 0,
+			creationDate: datum.ns0#creationDate as String default "",
+			manufacturer: {
+				employeesCount: datum.ns0#manufacturer.ns0#employeesCount,
+				name: datum.ns0#manufacturer.ns0#name,
+				coordinates: {
+					x: datum.ns0#manufacturer.ns0#coordinates.ns0#x,
+					y: datum.ns0#manufacturer.ns0#coordinates.ns0#y
+				},
+				fullName: datum.ns0#manufacturer.ns0#fullName,
+				annualTurnover: datum.ns0#manufacturer.ns0#annualTurnover,
+				id: datum.ns0#manufacturer.ns0#id
+			}
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<error-handler >
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="4b984e53-a825-4157-803e-ba71bf295401" >
+				<set-variable value="404" doc:name="Set Variable" doc:id="cb415aef-35ca-4a12-9186-b628864b3692" variableName="httpStatus" />
+				<ee:transform doc:name="Transform Message" doc:id="ccc05f0e-1382-470b-9e3d-70fdad2210c0" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output text/plain
+---
+error.detailedDescription]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</on-error-propagate>
+		</error-handler>
+    </flow>
+</mule>

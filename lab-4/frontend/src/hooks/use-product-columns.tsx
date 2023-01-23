@@ -132,7 +132,7 @@ const useProductColumns = ({
       dataIndex: 'unitOfMeasure',
       key: 'unitOfMeasure',
       sorter: sortable ? { multiple: 1 } : undefined,
-      render: unitOfMeasure => unitOfMeasure.toLowerCase(),
+      render: unitOfMeasure => unitOfMeasure?.toLowerCase(),
       ...getFilterProps('unitOfMeasure', UnitOfMeasureFilter),
     },
     {

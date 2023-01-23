@@ -184,6 +184,17 @@ services:
     volumes:
       - ${SSL_HOST_PATH}:${SSL_CONTAINER_PATH}
 
+#  os-shop-connector: todo mule in docker
+#    container_name: os-shop-connector
+#    restart: always
+#    image: ivankrizsan/mule-docker:latest
+#    networks:
+#      - os-shop-network
+#    ports:
+#      - "8091:8091"
+#    volumes:
+#      - ./services/shop/mule/connector/target:/opt/mule/apps/shop-connector
+
   os-frontend:
     container_name: ${FRONTEND_NAME}
     restart: always

@@ -19,8 +19,8 @@ const xmlParser = new XMLParser();
 
 export const parseXml = (xml?: string | Buffer) => {
   if (!xml) return undefined;
-
   const parsed = xmlParser.parse(xml);
+  delete parsed['?xml'];
   const result = parsed[Object.keys(parsed)[0]];
 
   if (result.data === '') {

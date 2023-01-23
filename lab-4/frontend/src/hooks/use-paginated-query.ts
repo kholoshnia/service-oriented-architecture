@@ -28,7 +28,7 @@ const usePaginatedQuery = <Item>(
       request(pagination).then(response => {
         const data = response.data;
         setTotal(data.total);
-        return data.data;
+        return data.data || [];
       }),
     {
       onError: (e: AxiosError) => processServerError(e),
